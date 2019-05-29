@@ -37,9 +37,8 @@ function request($target = null){
         if(array_key_exists($target,$tempRequest)){
             return $tempRequest[$target];
         }else{
-            return "";
+            return null;
         }
-
     }
     return $tempRequest;    
 }
