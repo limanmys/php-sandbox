@@ -34,7 +34,12 @@ function __($str){
 function request($target = null){
     global $tempRequest;
     if($target){
-        return $tempRequest[$target];
+        if(array_key_exists($target,$tempRequest)){
+            return $tempRequest[$target];
+        }else{
+            return "";
+        }
+
     }
     return $tempRequest;    
 }
