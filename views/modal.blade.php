@@ -26,7 +26,7 @@
                                     <option value="{{explode(":",$key)[1]}}">{{__(explode(":",$key)[0])}}</option>
                                 @endforeach
                                 @foreach ($selects as $key => $select)
-                                    @include('l.inputs',[
+                                    @include('inputs',[
                                             "inputs" => $select,
                                             "disabled" => "true",
                                             "id" => explode(":",$key)[1],
@@ -36,7 +36,7 @@
                             </select><br>
                         @endif
                         @isset($inputs)
-                            @include('l.inputs',$inputs)
+                            @include('inputs',$inputs)
                         @endisset
                         @isset($text)
                             {{__($text)}}
