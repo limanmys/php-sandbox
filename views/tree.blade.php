@@ -1,4 +1,4 @@
-@php($random = (isset($id)? $id : str_random(20)))
+@php($random = (isset($id)? $id : "a" . str_random(20)))
 <input class="form-control" type="search" onchange="search{{$random}}()" id="q"/>
 <br>
 <div id="{{$random}}"></div>
@@ -12,15 +12,15 @@
             "state",
             "wholerow"
         ],
-        'core': {
-            'data': [
+        "core": {
+            "data": [
                 @include("folder",["files" => $data])
             ],
             "check_callback": true
         },
         @isset($menu)
-        'contextmenu': {
-            items: {{$random}}customMenu
+        "contextmenu": {
+            items: {{$random}}customMenu,
         }
         @endisset
     }).on('select_node.jstree', function (e, data) {
@@ -34,7 +34,7 @@
             let path = $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
             return path.split(",").reverse().join(',');
         @else
-            return $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true)
+            return $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
         @endisset
         
     }
