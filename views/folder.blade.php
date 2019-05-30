@@ -3,7 +3,7 @@
         @if(strpos($key,"="))
             { "text" : "{{explode("=",$key)[1]}}", "children" : [@include('folder',["files" => $file])], "id" : "{{$key}}"},
         @else
-            { "text" : "{{$key}}", "children" : [@include('folder',["files" => $file])],"id" : "{{$key}}"}},
+            { "text" : "{{$key}}", "children" : [@include('folder',["files" => $file])],"id" : "{{$key}}"},
         @endif
         
     @else
