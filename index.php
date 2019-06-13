@@ -107,6 +107,7 @@ function externalAPI($target, $extension_id, $server_id = null){
 
 function runCommand($command){
     global $argv;
+    global $tempExt;
     $client = new Client([
         'verify' => false,
         'cookies' => true
@@ -117,6 +118,10 @@ function runCommand($command){
                 [
                     "name" => "server_id",
                     "contents" => server()->_id,
+                ],
+                [
+                    "name" => "extension_id",
+                    "contents" => $tempExt->_id,
                 ],
                 [
                     "name" => "command",
