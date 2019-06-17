@@ -1,7 +1,7 @@
 {
   "name": "Liman Sandbox app",
   "description": "",
-  "homepage": "liman.dev",
+  "homepage": "https://liman.dev",
   "version": "1.0",
   "type": "project",
   "require": {
