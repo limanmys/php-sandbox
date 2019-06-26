@@ -17,8 +17,8 @@ function extensionDb($target){
 }
 
 function extension(){
-    global $tempExt;
-    return $tempExt;
+    $json = json_decode(file_get_contents(getPath("db.json")),true);
+    return $json;
 }
 
 function server(){
