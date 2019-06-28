@@ -241,10 +241,11 @@ if($argv[3] == "null"){
     echo call_user_func($argv[9]);
     restore_error_handler();
 }else{
+    shell_exec("mkdir /tmp/" . $argv[13]);
     $blade = new Blade([
         dirname($argv[1]),
         __DIR__ . "/views/"
-    ],"/tmp");
+    ],"/tmp/" . $argv[13]);
     echo $blade->render($argv[3],[
         "data" => $data
     ]);
