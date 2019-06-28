@@ -83,7 +83,7 @@ function externalAPI($target, $extension_id, $server_id = null){
             "multipart" => [
                 [
                     "name" => "server_id",
-                    "contents" => ($server_id) ? $server_id : server()->_id,
+                    "contents" => ($server_id) ? $server_id : server()->id,
                 ],
                 [
                     "name" => "extension_id",
@@ -96,6 +96,10 @@ function externalAPI($target, $extension_id, $server_id = null){
                 [
                     "name" => "token",
                     "contents" => $argv[12]
+                ],
+                [
+                    "name" => "extension_id",
+                    "contents" => $argv[13],
                 ]
             ],
         ]);
@@ -117,11 +121,11 @@ function runCommand($command){
             "multipart" => [
                 [
                     "name" => "server_id",
-                    "contents" => server()->_id,
+                    "contents" => server()->id,
                 ],
                 [
                     "name" => "extension_id",
-                    "contents" => $tempExt->_id,
+                    "contents" => $argv[13],
                 ],
                 [
                     "name" => "command",
@@ -150,7 +154,7 @@ function putFile($localPath,$remotePath){
             "multipart" => [
                 [
                     "name" => "server_id",
-                    "contents" => server()->_id,
+                    "contents" => server()->id,
                 ],
                 [
                     "name" => "localPath",
@@ -163,6 +167,10 @@ function putFile($localPath,$remotePath){
                 [
                     "name" => "token",
                     "contents" => $argv[12]
+                ],
+                [
+                    "name" => "extension_id",
+                    "contents" => $argv[13],
                 ]
             ],
         ]);
@@ -183,7 +191,7 @@ function getFile($localPath,$remotePath){
             "multipart" => [
                 [
                     "name" => "server_id",
-                    "contents" => server()->_id,
+                    "contents" => server()->id,
                 ],
                 [
                     "name" => "localPath",
@@ -196,6 +204,10 @@ function getFile($localPath,$remotePath){
                 [
                     "name" => "token",
                     "contents" => $argv[12]
+                ],
+                [
+                    "name" => "extension_id",
+                    "contents" => $argv[13],
                 ]
             ],
         ]);
