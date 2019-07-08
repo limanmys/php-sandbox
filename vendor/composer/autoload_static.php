@@ -41,6 +41,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
         ),
+        'M' => 
+        array (
+            'Medoo\\' => 6,
+        ),
         'J' => 
         array (
             'Jenssegers\\Blade\\' => 17,
@@ -118,6 +122,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Medoo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/catfan/medoo/src',
         ),
         'Jenssegers\\Blade\\' => 
         array (
