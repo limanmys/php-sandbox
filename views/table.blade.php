@@ -6,7 +6,7 @@
     @else
         @php($rand = str_random(10))
     @endisset
-
+<div class="table-responsive">
 <table class="table table-striped table-hover nowrap @isset($noInitialize){{"notDataTable"}}@endisset" id="{{$rand}}" style="width: 100%">
         <thead>
         <tr>
@@ -43,6 +43,7 @@
         @endforeach
         </tbody>
     </table>
+</div>
     @if(isset($menu))
         <script>
             @isset($setCurrentVariable)
