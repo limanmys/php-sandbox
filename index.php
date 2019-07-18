@@ -246,7 +246,7 @@ if($argv[3] == "null"){
         dirname($argv[1]),
         __DIR__ . "/views/"
     ],"/tmp/" . $argv[13]);
-    echo $blade->render($argv[3],[
+    echo $blade->render("views/" . $argv[3],[
         "data" => $data
     ]);
 }
