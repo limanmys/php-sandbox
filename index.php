@@ -219,7 +219,7 @@ function getFile($localPath,$remotePath){
 
 function getPath($filename = null){
     global $argv;
-    return dirname($argv[1]) . "/" . $filename;
+    return dirname(dirname($argv[1])) . "/" . $filename;
 }
 
 $functions = get_defined_functions();
