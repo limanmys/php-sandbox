@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43cd2dc9-b0ee-4641-af84-2bc28b08aa45" name="Default Changelist" comment="Update for database as a file design.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +36,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="648">
-              <caret line="229" lean-forward="true" selection-start-line="229" selection-end-line="229" />
+            <state relative-caret-position="295">
+              <caret line="229" column="20" selection-start-line="229" selection-start-column="20" selection-end-line="229" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -48,8 +49,8 @@
       <find>getFile</find>
       <find>respond</find>
       <find>include</find>
-      <find>getPath</find>
       <find>[14]</find>
+      <find>getPath</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -193,7 +194,7 @@
       <workItem from="1563456694707" duration="596000" />
       <workItem from="1563520189087" duration="20000" />
       <workItem from="1563520342007" duration="1285000" />
-      <workItem from="1563544188289" duration="2832000" />
+      <workItem from="1563544188289" duration="5848000" />
     </task>
     <task id="LOCAL-00001" summary="Fix for unset requests.">
       <created>1559139173222</created>
@@ -276,7 +277,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41591000" />
+    <option name="totallyTimeSpent" value="44607000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -479,8 +480,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="648">
-          <caret line="229" lean-forward="true" selection-start-line="229" selection-end-line="229" />
+        <state relative-caret-position="295">
+          <caret line="229" column="20" selection-start-line="229" selection-start-column="20" selection-end-line="229" selection-end-column="20" />
         </state>
       </provider>
     </entry>
