@@ -10,6 +10,7 @@ $tempSrv = json_decode(str_replace('*m*','"', $argv[4]));
 $tempDb = json_decode(str_replace('*m*','"', $argv[6]),true);
 $data = json_decode(str_replace('*m*','"', $argv[7]),true);
 $tempRequest = json_decode(str_replace('*m*','"', $argv[8]),true);
+$permissions = json_decode(str_replace('*m*','"', $argv[14]),true);
 
 function extensionDb($target){
     global $tempDb;
@@ -220,6 +221,11 @@ function getFile($localPath,$remotePath){
 function getPath($filename = null){
     global $argv;
     return dirname(dirname($argv[1])) . "/" . $filename;
+}
+
+function can($name){
+    global $permissions;
+    return in_array($name,$permissions);
 }
 
 $functions = get_defined_functions();
