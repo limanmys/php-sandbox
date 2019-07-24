@@ -63,11 +63,11 @@
         <script type="text/javascript">
             function cs_{{$id}}(target){
                 Array.prototype.forEach.call(document.getElementsByClassName('{{$id}}'),function(element){
-                    element.setAttribute('hidden',"true");
+                    element.style.display = 'none';
                     element.setAttribute('disabled',"true");
                 });
                 Array.prototype.forEach.call(document.getElementsByClassName(target),function(element){
-                    element.removeAttribute('hidden');
+                    element.style.display = 'block';
                     element.removeAttribute('disabled');
                 });
             }
