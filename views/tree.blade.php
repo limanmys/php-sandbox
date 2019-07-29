@@ -30,11 +30,12 @@
     });
 
     function getPath() {
+        let path = $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
+        path = path.replace(/\*LIMAN\*\w{10}\*LIMAN\*/g,'');
         @isset($ldapStyle)
-            let path = $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
             return path.split(",").reverse().join(',');
         @else
-            return $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
+            return path;
         @endisset
         
     }
