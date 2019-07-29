@@ -6,6 +6,9 @@
     @else
         @php($rand = str_random(10))
     @endisset
+    @if(!isset($startingNumber))
+        @php($startingNumber = 0)
+    @endisset
 <div class="table-responsive">
 <table class="table table-striped table-hover nowrap @isset($noInitialize){{"notDataTable"}}@endisset" id="{{$rand}}" style="width: 100%">
         <thead>
@@ -23,7 +26,7 @@
         <tbody class="table-striped">
         @foreach ($value as $k)
             <tr class="tableRow" id="{{str_random(10)}}" @isset($onclick)style="cursor: pointer;" onclick="{{$onclick}}(this)" @endisset>
-                <td style="width: 10px">{{$loop->iteration}}</td>
+                <td style="width: 10px">{{$loop->iteration + $startingNumber}}</td>
                 @foreach($display as $item)
                     @if(count(explode(':',$item)) > 1)
                         @if(is_array($k))
