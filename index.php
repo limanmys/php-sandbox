@@ -5,16 +5,18 @@ use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-$tempExt = json_decode(str_replace('*m*','"', $argv[5]));
-$tempSrv = json_decode(str_replace('*m*','"', $argv[4]));
-$tempDb = json_decode(str_replace('*m*','"', $argv[6]),true);
-$data = json_decode(str_replace('*m*','"', $argv[7]),true);
-$tempRequest = json_decode(str_replace('*m*','"', $argv[8]),true);
-$permissions = json_decode(str_replace('*m*','"', $argv[14]),true);
+$decrypted = openssl_decrypt($argv[2],'aes-256-cfb8',shell_exec('cat ' . $argv[1]));
+
+$limanData = json_decode(base64_decode(substr($decrypted,16)),false,512);
+
+foreach ($limanData as $key=>$item) {
+    $json = json_decode($item,true);
+    $limanData[$key] = (json_last_error() == JSON_ERROR_NONE) ? $json : $item;
+}
 
 function extensionDb($target){
-    global $tempDb;
-    return $tempDb[$target];
+    global $limanData;
+    return $limanData[5][$target];
 }
 
 function extension(){
@@ -23,8 +25,8 @@ function extension(){
 }
 
 function server(){
-    global $tempSrv;
-    return $tempSrv;
+    global $limanData;
+    return (Object)$limanData[3];
 }
 
 // Translation disabled for now.
@@ -33,7 +35,8 @@ function __($str){
 }
 
 function request($target = null){
-    global $tempRequest;
+    global $limanData;
+    $tempRequest = $limanData[7];
     if($target){
         if(array_key_exists($target,$tempRequest)){
             return $tempRequest[$target];
@@ -45,8 +48,8 @@ function request($target = null){
 }
 
 function API($target){
-    global $argv;
-    return $argv[10] . "/" . $target;
+    global $limanData;
+    return $limanData[9] . "/" . $target;
 }
 
 function respond($message,$code = "200"){
@@ -57,7 +60,7 @@ function respond($message,$code = "200"){
 }
 
 function navigate($name,$params = []){
-    global $argv;
+    global $limanData;
     $args = '';
     if($params != []){
     $args = '?&';
@@ -65,7 +68,7 @@ function navigate($name,$params = []){
             $args = $args . "&$key=$param";
         }
     }
-    return $argv[11] . '/' . $name . $args;
+    return $limanData[10] . '/' . $name . $args;
 }
 
 function view($name,$params = []){
@@ -74,7 +77,7 @@ function view($name,$params = []){
 }
 
 function externalAPI($target, $extension_id, $server_id = null){
-    global $argv;
+    global $limanData;
     $client = new Client([
         'verify' => false,
         'cookies' => true
@@ -96,11 +99,11 @@ function externalAPI($target, $extension_id, $server_id = null){
                 ],
                 [
                     "name" => "token",
-                    "contents" => $argv[12]
+                    "contents" => $limanData[11]
                 ],
                 [
                     "name" => "extension_id",
-                    "contents" => $argv[13],
+                    "contents" => $limanData[12],
                 ]
             ],
         ]);
@@ -111,7 +114,7 @@ function externalAPI($target, $extension_id, $server_id = null){
 }
 
 function runCommand($command){
-    global $argv;
+    global $limanData;
     global $tempExt;
     $client = new Client([
         'verify' => false,
@@ -126,7 +129,7 @@ function runCommand($command){
                 ],
                 [
                     "name" => "extension_id",
-                    "contents" => $argv[13],
+                    "contents" => $limanData[12],
                 ],
                 [
                     "name" => "command",
@@ -134,7 +137,7 @@ function runCommand($command){
                 ],
                 [
                     "name" => "token",
-                    "contents" => $argv[12]
+                    "contents" => $limanData[11]
                 ]
             ],
         ]);
@@ -145,7 +148,7 @@ function runCommand($command){
 }
 
 function putFile($localPath,$remotePath){
-    global $argv;
+    global $limanData;
     $client = new Client([
         'verify' => false,
         'cookies' => true
@@ -167,11 +170,11 @@ function putFile($localPath,$remotePath){
                 ],
                 [
                     "name" => "token",
-                    "contents" => $argv[12]
+                    "contents" => $limanData[11]
                 ],
                 [
                     "name" => "extension_id",
-                    "contents" => $argv[13],
+                    "contents" => $limanData[12],
                 ]
             ],
         ]);
@@ -182,7 +185,7 @@ function putFile($localPath,$remotePath){
 }
 
 function getFile($localPath,$remotePath){
-    global $argv;
+    global $limanData;
     $client = new Client([
         'verify' => false,
         'cookies' => true
@@ -204,11 +207,11 @@ function getFile($localPath,$remotePath){
                 ],
                 [
                     "name" => "token",
-                    "contents" => $argv[12]
+                    "contents" => $limanData[11]
                 ],
                 [
                     "name" => "extension_id",
-                    "contents" => $argv[13],
+                    "contents" => $limanData[12],
                 ]
             ],
         ]);
@@ -219,14 +222,14 @@ function getFile($localPath,$remotePath){
 }
 
 function getPath($filename = null){
-    global $argv;
-    return dirname(dirname($argv[1])) . "/" . $filename;
+    global $limanData;
+    return dirname(dirname($limanData[0])) . "/" . $filename;
 }
 
 function can($name){
     global $permissions;
-    global $argv;
-    if($argv[14] == "admin"){
+    global $limanData;
+    if($limanData[13] == "admin"){
         return true;
     }
     return in_array($name,$permissions);
@@ -237,26 +240,25 @@ $keys = array_keys($functions['user']);
 $last_index = array_pop($keys);
 
 // Functions PHP
-if(is_file($argv[1])){
-    include($argv[1]);
+if(is_file($limanData[0])){
+    include($limanData[0]);
 }
 
 $functions = get_defined_functions();
 $new_functions = array_slice($functions['user'], $last_index + 1);
-
-if($argv[3] == "null"){
+if($limanData[2] == null){
     set_error_handler(function(){
         return "error";
     });
-    echo call_user_func($argv[9]);
+    echo call_user_func($limanData[8]);
     restore_error_handler();
 }else{
-    shell_exec("mkdir /tmp/" . $argv[13]);
+    shell_exec("mkdir /tmp/" . $limanData[12]);
     $blade = new Blade([
-        dirname($argv[1]),
+        dirname($limanData[0]),
         __DIR__ . "/views/"
-    ],"/tmp/" . $argv[13]);
-    echo $blade->render($argv[3],[
-        "data" => $data
+    ],"/tmp/" . $limanData[12]);
+    echo $blade->render($limanData[2],[
+        "data" => $limanData[6]
     ]);
 }

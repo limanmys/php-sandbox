@@ -10,6 +10,7 @@
     "phpseclib/phpseclib": "~2.0",
     "guzzlehttp/guzzle": "^6.3",
     "ext-json" : "*",
-    "catfan/medoo": "^1.6"
+    "catfan/medoo": "^1.6",
+    "ext-openssl": "*"
   }
 }
