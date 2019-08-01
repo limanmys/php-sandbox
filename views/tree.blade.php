@@ -31,13 +31,12 @@
 
     function getPath() {
         let path = $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
-        path = path.replace(/\*LIMAN\*\w{10}\*LIMAN\*/g,'');
+        path = path.replace(/-LIMAN\*.*?\*LIMAN-/g,'');
         @isset($ldapStyle)
             return path.split(",").reverse().join(',');
         @else
             return path;
         @endisset
-        
     }
 
     function search{{$random}}() {
