@@ -227,12 +227,11 @@ function getPath($filename = null){
 }
 
 function can($name){
-    global $permissions;
     global $limanData;
     if($limanData[13] == "admin"){
         return true;
     }
-    return in_array($name,$permissions);
+    return in_array($name,$limanData[13]);
 }
 
 $functions = get_defined_functions();
