@@ -61,7 +61,7 @@
             '{{random_int(1,100)}}': {
                 label: "{{__($key)}}",
                 action: {{$item}}
-            }
+            },
             @endforeach
         };
     }
