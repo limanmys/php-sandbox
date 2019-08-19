@@ -1,4 +1,4 @@
-<div class="input-group" style="max-width: 220px;">
+<div class="input-group" style="max-width: 220px;z-index: 1;">
     <span class="input-group-btn">
         <button @if($current != 1) onclick="{{$onclick . '(' . ($current - 1 ). ')'}}" @else disabled @endif class="btn btn-default" type="button">{{__("Önceki")}}</button>
     </span>

@@ -26,11 +26,11 @@
         @endisset
     }).on('select_node.jstree', function (e, data) {
         @isset($click)
-                {{$click}}(getPath());
+                {{$click}}(getPath{{$random}}());
         @endisset
     });
 
-    function getPath() {
+    function getPath{{$random}}() {
         let path = $('#{{$random}}').jstree().get_path($('#{{$random}}').jstree("get_selected")[0], ',',true);
         path = path.replace(/-LIMAN\*.*?\*LIMAN-/g,'');
         @isset($ldapStyle)
