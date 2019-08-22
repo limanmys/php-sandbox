@@ -3,12 +3,12 @@
     @php($random = $key. '-LIMAN*'. $path . '*LIMAN-')
     @if(is_array($file))
         @if(strpos($key,"="))
-            { "text" : "{{explode("=",$key)[1]}}", "children" : [@include('folder',["files" => $file, "path" => $path])], "id" : "{{$random}}"},
+            { "li_attr": { "title" : "{{explode("=",$key)[1]}}" }, "text" : "{{explode("=",$key)[1]}}", "children" : [@include('folder',["files" => $file, "path" => $path])], "id" : "{{$random}}"},
         @else
-            { "text" : "{{$key}}", "children" : [@include('folder',["files" => $file, "path" => $path])],"id" : "{{$random}}"},
+            { "li_attr": { "title" : "{{$key}}" }, "text" : "{{$key}}", "children" : [@include('folder',["files" => $file, "path" => $path])],"id" : "{{$random}}"},
         @endif
         
     @else
-        { "text" : "{{$file}}" },
+        { "li_attr": { "title" : "{{$file}}" }, "text" : "{{$file}}" },
     @endif
 @endforeach
