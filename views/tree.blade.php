@@ -1,5 +1,5 @@
 @php($random = (isset($id)? $id : "a" . str_random(20)))
-<input class="form-control" type="search" onchange="search{{$random}}()" id="q"/><br>
+<input class="form-control" type="search" onchange="search{{$random}}(this)"/><br>
 <button class="btn btn-primary" onclick="toogle{{$random}}()"><i id="icon{{$random}}" class="fa fa-compress"></i></button><br>
 <br>
 <div id="{{$random}}" style="overflow-x: auto"></div>
@@ -40,8 +40,8 @@
         @endisset
     }
 
-    function search{{$random}}() {
-        $('#{{$random}}').jstree(true).search($("#q").val());
+    function search{{$random}}(el) {
+        $('#{{$random}}').jstree(true).search($(el).val());
     }
     let open{{$random}} = false;
     function toogle{{$random}}(){
