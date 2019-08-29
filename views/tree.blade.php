@@ -2,7 +2,7 @@
 <input class="form-control" type="search" onchange="search{{$random}}(this)"/><br>
 <button class="btn btn-primary" onclick="toogle{{$random}}()"><i id="icon{{$random}}" class="fa fa-compress"></i></button><br>
 <br>
-<div id="{{$random}}" style="overflow-x: auto"></div>
+<div id="{{$random}}" style="overflow-x: auto; max-height: 450px; overflow-y: auto;"></div>
 <script>
     $('#{{$random}}').jstree({
         "plugins": [
