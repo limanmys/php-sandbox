@@ -252,11 +252,11 @@ if($limanData[2] == null){
     echo call_user_func($limanData[8]);
     restore_error_handler();
 }else{
-    shell_exec("mkdir /tmp/" . $limanData[12]);
+    shell_exec("mkdir /tmp/liman" . $limanData[12]);
     $blade = new Blade([
         dirname($limanData[0]),
         __DIR__ . "/views/"
-    ],"/tmp/" . $limanData[12]);
+    ],"/tmp/liman" . $limanData[12]);
     echo $blade->render($limanData[2],[
         "data" => $limanData[6]
     ]);
