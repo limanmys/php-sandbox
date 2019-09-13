@@ -31,7 +31,16 @@ function server(){
 
 // Translation disabled for now.
 function __($str){
-    return $str;
+    global $limanData;
+    $folder = dirname(dirname($limanData[0])) . "/lang";
+    $file = $folder . "/" . $limanData[15] . ".json";
+    if(!is_dir($folder) || !is_file($file)){
+        return $str;
+    }
+    
+    // Read JSON
+    $json = json_decode(file_get_contents($file),true);
+    return (array_key_exists($str,$json)) ? $json[$str] : $str;
 }
 
 function request($target = null){
