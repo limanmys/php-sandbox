@@ -33,7 +33,7 @@ function server(){
 function __($str){
     global $limanData;
     $folder = dirname(dirname($limanData[0])) . "/lang";
-    $file = $folder . "/" . $limanData[15] . ".json";
+    $file = $folder . "/" . $limanData[14] . ".json";
     if(!is_dir($folder) || !is_file($file)){
         return $str;
     }
