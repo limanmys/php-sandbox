@@ -57,6 +57,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
             'Illuminate\\Events\\' => 18,
             'Illuminate\\Contracts\\' => 21,
             'Illuminate\\Container\\' => 21,
+            'Icewind\\Streams\\Tests\\' => 22,
+            'Icewind\\Streams\\' => 16,
+            'Icewind\\SMB\\Test\\' => 17,
+            'Icewind\\SMB\\' => 12,
         ),
         'G' => 
         array (
@@ -154,6 +158,22 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'Illuminate\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/container',
+        ),
+        'Icewind\\Streams\\Tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/icewind/streams/tests',
+        ),
+        'Icewind\\Streams\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/icewind/streams/src',
+        ),
+        'Icewind\\SMB\\Test\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/icewind/smb/tests',
+        ),
+        'Icewind\\SMB\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/icewind/smb/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

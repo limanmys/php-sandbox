@@ -11,6 +11,7 @@
     "guzzlehttp/guzzle": "^6.3",
     "ext-json" : "*",
     "catfan/medoo": "^1.6",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "icewind/smb": "^3.1"
   }
 }
