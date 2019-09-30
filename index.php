@@ -48,7 +48,7 @@ function request($target = null){
     $tempRequest = $limanData[7];
     if($target){
         if(array_key_exists($target,$tempRequest)){
-            return $tempRequest[$target];
+            return html_entity_decode($tempRequest[$target]);
         }else{
             return null;
         }
