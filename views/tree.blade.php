@@ -1,5 +1,7 @@
 @php($random = (isset($id)? $id : "a" . str_random(20)))
+@isset($search)
 <input class="form-control" type="search" onchange="search{{$random}}(this)"/><br>
+@endisset
 <button class="btn btn-primary" onclick="toogle{{$random}}()"><i id="icon{{$random}}" class="fa fa-compress"></i></button><br>
 <br>
 <div id="{{$random}}" style="overflow-x: auto; max-height: 450px; overflow-y: auto;"></div>
@@ -9,7 +11,9 @@
             @isset($menu)
             "contextmenu",
             @endisset
+            @isset($search)
             "search",
+            @endisset
             "state",
             "wholerow"
         ],
@@ -39,10 +43,11 @@
             return path;
         @endisset
     }
-
+    @isset($search)
     function search{{$random}}(el) {
         $('#{{$random}}').jstree(true).search($(el).val());
     }
+    @endisset
     let open{{$random}} = false;
     function toogle{{$random}}(){
         if(open{{$random}}){
