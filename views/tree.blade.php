@@ -8,7 +8,7 @@
         "plugins": [
             @isset($menu)
             "contextmenu",
-            @isset($search)
+            @endisset
             "search",
             "state",
             "wholerow"
