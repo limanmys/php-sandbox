@@ -1,4 +1,5 @@
 @foreach($files as $key => $file)
+    @php($path = isset($path) ? $path : '')
     @php($path .= $key.',')
     @php($random = $key. '-LIMAN*'. $path . '*LIMAN-')
     @if(is_array($file))
