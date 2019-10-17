@@ -28,11 +28,12 @@
             <tr class="tableRow" id="{{str_random(10)}}" @isset($onclick)style="cursor: pointer;" onclick="{{$onclick}}(this)" @endisset>
                 <td style="width: 10px">{{$loop->iteration + $startingNumber}}</td>
                 @foreach($display as $item)
+                @php($value = strval($k[explode(':',$item)[0]]))
                     @if(count(explode(':',$item)) > 1)
                         @if(is_array($k))
-                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k[explode(':',$item)[0]]}}</td>
+                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k[$value]}}</td>
                         @else
-                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k->__get(explode(':',$item)[0])}}</td>
+                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k->__get($value)}}</td>
                         @endif
                     @else
                         @if(is_array($k))
