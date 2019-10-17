@@ -211,6 +211,11 @@ function putFile($localPath, $remotePath)
     }
 }
 
+function sudo()
+{
+    return 'echo ' . extensionDb("clientPassword") .' | sudo -S 2>/dev/null ';
+}
+
 function getFile($localPath, $remotePath)
 {
     global $limanData;
