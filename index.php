@@ -173,12 +173,60 @@ function runCommand($command)
     }
 }
 
+function runScript($name,$parameters = "",$sudo = true)
+{
+    global $limanData;
+    $cookieJar = CookieJar::fromArray([
+        'liman_session' => $limanData[15]
+    ], '127.0.0.1');
+    $client = new Client([
+        'verify' => false,
+        'cookies' => $cookieJar
+    ]);
+    try {
+        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/runScriptApi', [
+            "multipart" => [
+                [
+                    "name" => "scriptName",
+                    "contents" => $name,
+                ],
+                [
+                    "name" => "server_id",
+                    "contents" => server()->id,
+                ],
+                [
+                    "name" => "extension_id",
+                    "contents" => $limanData[12],
+                ],
+                [
+                    "name" => "runAsRoot",
+                    "contents" => $sudo ? "yes" : "no",
+                ],
+                [
+                    "name" => "parameters",
+                    "contents" => $parameters
+                ],
+                [
+                    "name" => "token",
+                    "contents" => $limanData[11]
+                ]
+            ],
+        ]);
+        return $response->getBody()->getContents();
+    } catch (GuzzleException $exception) {
+        return $exception->getResponse()->getBody()->getContents();
+    }
+}
+
 function putFile($localPath, $remotePath)
 {
     global $limanData;
+    $cookieJar = CookieJar::fromArray([
+        'liman_session' => $limanData[15]
+    ], '127.0.0.1');
     $client = new Client([
         'verify' => false,
-        'cookies' => true
+        'cookies' => $cookieJar
     ]);
     try {
         $response = $client->request('POST', 'https://127.0.0.1/lmn/private/putFileApi', [
@@ -219,9 +267,12 @@ function sudo()
 function getFile($localPath, $remotePath)
 {
     global $limanData;
+    $cookieJar = CookieJar::fromArray([
+        'liman_session' => $limanData[15]
+    ], '127.0.0.1');
     $client = new Client([
         'verify' => false,
-        'cookies' => true
+        'cookies' => $cookieJar
     ]);
     try {
         $response = $client->request('POST', 'https://127.0.0.1/lmn/private/getFileApi', [
