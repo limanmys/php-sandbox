@@ -261,7 +261,7 @@ function putFile($localPath, $remotePath)
 
 function sudo()
 {
-    return 'echo ' . extensionDb("clientPassword") .' | sudo -S 2>/dev/null ';
+    return 'echo ' . extensionDb("clientPassword") .' | sudo -S -p "" ';
 }
 
 function getFile($localPath, $remotePath)
