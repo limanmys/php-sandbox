@@ -214,6 +214,7 @@ function runScript($name,$parameters = "",$sudo = true)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
+        dd($exception->getMessage());
         return $exception->getResponse()->getBody()->getContents();
     }
 }
