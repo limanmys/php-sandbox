@@ -265,6 +265,48 @@ function sudo()
     return 'echo ' . extensionDb("clientPassword") .' | sudo -S -p "" ';
 }
 
+
+function session($key = null)
+{
+    global $limanData;
+    if(array_key_exists($key,$limanData[16])){
+        return $limanData[16][$key];
+    }
+    if($key == null){
+        return $limanData[16];
+    }
+    return null;
+}
+
+function putSession($key,$value)
+{
+    global $limanData;
+    $cookieJar = CookieJar::fromArray([
+        'liman_session' => $limanData[15]
+    ], '127.0.0.1');
+    $client = new Client([
+        'verify' => false,
+        'cookies' => $cookieJar
+    ]);
+    try {
+        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/putSession', [
+            "multipart" => [
+                [
+                    "name" => "session_key",
+                    "contents" => $key,
+                ],
+                [
+                    "name" => "value",
+                    "contents" => $value
+                ]
+            ],
+        ]);
+        return $response->getBody()->getContents();
+    } catch (GuzzleException $exception) {
+        return $exception->getResponse()->getBody()->getContents();
+    }
+}
+
 function getFile($localPath, $remotePath)
 {
     global $limanData;
