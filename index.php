@@ -301,6 +301,7 @@ function putSession($key,$value)
                 ]
             ],
         ]);
+        $limanData[16][$key] = $value;
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
         return $exception->getResponse()->getBody()->getContents();
