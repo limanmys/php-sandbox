@@ -297,7 +297,7 @@ function putSession($key,$value)
                 ],
                 [
                     "name" => "value",
-                    "contents" => $value
+                    "contents" => json_encode($value)
                 ]
             ],
         ]);
