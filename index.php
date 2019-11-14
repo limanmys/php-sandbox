@@ -10,8 +10,9 @@ use GuzzleHttp\Cookie\CookieJar;
 $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', shell_exec('cat ' . $argv[1]));
 
 $limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
+
 foreach ($limanData as $key => $item) {
-    $json = json_decode($item, true);
+    @$json = json_decode($item, true);
     $limanData[$key] = (json_last_error() == JSON_ERROR_NONE) ? $json : $item;
 }
 
@@ -95,7 +96,7 @@ function view($name, $params = [])
     return $blade->render($name, $params);
 }
 
-function externalAPI($target, $extension_id, $server_id = null)
+function externalAPI($target, $extension_id, $server_id = null, $params=[])
 {
     global $limanData;
     $cookieJar = CookieJar::fromArray([
@@ -105,9 +106,16 @@ function externalAPI($target, $extension_id, $server_id = null)
         'verify' => false,
         'cookies' => $cookieJar
     ]);
+    $extraParams = [];
+    foreach($params as $key => $value){
+        $extraParams[] = [
+            "name" => $key,
+            "contents" => $value
+        ];
+    }
     try {
         $response = $client->request('POST', 'https://127.0.0.1/lmn/private/extensionApi', [
-            "multipart" => [
+            "multipart" => array_merge($extraParams, [
                 [
                     "name" => "server_id",
                     "contents" => ($server_id) ? $server_id : server()->id,
@@ -123,12 +131,8 @@ function externalAPI($target, $extension_id, $server_id = null)
                 [
                     "name" => "token",
                     "contents" => $limanData[11]
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
                 ]
-            ],
+            ]),
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
@@ -214,7 +218,6 @@ function runScript($name,$parameters = "",$sudo = true)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        dd($exception->getMessage());
         return $exception->getResponse()->getBody()->getContents();
     }
 }
