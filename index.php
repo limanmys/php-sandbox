@@ -265,7 +265,8 @@ function putFile($localPath, $remotePath)
 
 function sudo()
 {
-    return 'echo ' . extensionDb("clientPassword") .' | sudo -S -p "" ';
+    $pass64 = base64_encode(extensionDb("clientPassword"));
+    return 'echo ' . $pass64 .' | base64 -d | sudo -S -p "" ';
 }
 
 
