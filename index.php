@@ -96,6 +96,12 @@ function view($name, $params = [])
     return $blade->render($name, $params);
 }
 
+function publicPath($path)
+{
+    global $limanData;
+    return $limanData[9] . "/public/" . base64_encode($path);
+}
+
 function externalAPI($target, $extension_id, $server_id = null, $params=[])
 {
     global $limanData;
