@@ -96,6 +96,39 @@ function view($name, $params = [])
     return $blade->render($name, $params);
 }
 
+function requestReverseProxy($hostname,$port)
+{
+    global $limanData;
+    $cookieJar = CookieJar::fromArray([
+        'liman_session' => $limanData[15]
+    ], '127.0.0.1');
+    $client = new Client([
+        'verify' => false,
+        'cookies' => $cookieJar
+    ]);
+    try {
+        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/reverseProxyRequest', [
+            "multipart" => [
+                [
+                    "name" => "hostname",
+                    "contents" => $hostname,
+                ],
+                [
+                    "name" => "port",
+                    "contents" => $port
+                ],
+                [
+                    "name" => "token",
+                    "contents" => $limanData[11]
+                ]
+            ],
+        ]);
+        return $response->getBody()->getContents();
+    } catch (GuzzleException $exception) {
+        return $exception->getResponse()->getBody()->getContents();
+    }
+}
+
 function publicPath($path)
 {
     global $limanData;
