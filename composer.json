@@ -12,6 +12,7 @@
     "ext-json" : "*",
     "catfan/medoo": "^1.6",
     "ext-openssl": "*",
-    "icewind/smb": "^3.1"
+    "icewind/smb": "^3.1",
+    "mongodb/mongodb": "^1.4"
   }
 }

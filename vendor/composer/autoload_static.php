@@ -16,6 +16,7 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '0e423a14e27410a071e5d815d3ffc856' => __DIR__ . '/..' . '/larapack/dd/src/helper.php',
+        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
     );
 
@@ -43,6 +44,7 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         ),
         'M' => 
         array (
+            'MongoDB\\' => 8,
             'Medoo\\' => 6,
         ),
         'J' => 
@@ -126,6 +128,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'MongoDB\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mongodb/mongodb/src',
         ),
         'Medoo\\' => 
         array (
