@@ -29,7 +29,7 @@
                             </select>
                         </div>
                         @foreach ($selects as $key => $select)
-                        @include('l.inputs',[
+                        @include('inputs',[
                                     "inputs" => $select,
                                     "disabled" => "true",
                                     "id" => explode(":",$key)[1],
