@@ -14,6 +14,7 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '0e423a14e27410a071e5d815d3ffc856' => __DIR__ . '/..' . '/larapack/dd/src/helper.php',
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
@@ -21,6 +22,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
     );
 
     public static $prefixLengthsPsr4 = array (
+        's' => 
+        array (
+            'setasign\\Fpdi\\' => 14,
+        ),
         'p' => 
         array (
             'phpseclib\\' => 10,
@@ -44,6 +49,7 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         ),
         'M' => 
         array (
+            'Mpdf\\' => 5,
             'MongoDB\\' => 8,
             'Medoo\\' => 6,
         ),
@@ -73,6 +79,7 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'D' => 
         array (
             'Doctrine\\Common\\Inflector\\' => 26,
+            'DeepCopy\\' => 9,
         ),
         'C' => 
         array (
@@ -81,6 +88,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
     );
 
     public static $prefixDirsPsr4 = array (
+        'setasign\\Fpdi\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/setasign/fpdi/src',
+        ),
         'phpseclib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
@@ -128,6 +139,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Mpdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
         ),
         'MongoDB\\' => 
         array (
@@ -196,6 +211,10 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'Doctrine\\Common\\Inflector\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
+        ),
+        'DeepCopy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
         'Carbon\\' => 
         array (
