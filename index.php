@@ -211,7 +211,7 @@ function runCommand($command)
                 ]
             ],
         ]);
-        return $response->getBody()->getContents();
+        return trim($response->getBody()->getContents());
     } catch (GuzzleException $exception) {
         return $exception->getResponse()->getBody()->getContents();
     }
@@ -306,7 +306,7 @@ function putFile($localPath, $remotePath)
 function sudo()
 {
     $pass64 = base64_encode(extensionDb("clientPassword")."\n");
-    return 'echo ' . $pass64 .' | base64 -d | sudo -S -p "" id 2>/dev/null 1>/dev/null; sudo ';
+    return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
 }
 
 
