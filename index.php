@@ -133,7 +133,7 @@ function requestReverseProxy($hostname,$port)
 function publicPath($path)
 {
     global $limanData;
-    return $limanData[9] . "/public/" . base64_encode($path);
+    return str_replace("eklenti2", "eklenti", $limanData[9]) . "/public/" . base64_encode($path);
 }
 
 function externalAPI($target, $extension_id, $server_id = null, $params=[])
