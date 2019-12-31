@@ -130,6 +130,47 @@ function requestReverseProxy($hostname,$port)
     }
 }
 
+function dispatchJob($function_name,$parameters = [])
+{
+    global $limanData;
+    $cookieJar = CookieJar::fromArray([
+        'liman_session' => $limanData[15]
+    ], '127.0.0.1');
+    $client = new Client([
+        'verify' => false,
+        'cookies' => $cookieJar
+    ]);
+    try {
+        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/dispatchJob', [
+            "multipart" => [
+                [
+                    "name" => "server_id",
+                    "contents" => server()->id,
+                ],
+                [
+                    "name" => "extension_id",
+                    "contents" => $limanData[12]
+                ],
+                [
+                    "name" => "function_name",
+                    "contents" => $function_name,
+                ],
+                [
+                    "name" => "parameters",
+                    "contents" => json_encode($parameters)
+                ],
+                [
+                    "name" => "token",
+                    "contents" => $limanData[11]
+                ]
+            ],
+        ]);
+        return $response->getBody()->getContents();
+    } catch (GuzzleException $exception) {
+        return $exception->getResponse()->getBody()->getContents();
+    }
+}
+
 function publicPath($path)
 {
     global $limanData;
