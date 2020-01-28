@@ -422,7 +422,7 @@ function putFile($localPath, $remotePath)
                 ]
             ],
         ]);
-        return "ok";
+        return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
         ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
