@@ -77,6 +77,13 @@ function respond($message, $code = "200")
     ]);
 }
 
+function abort($message, $code = "200")
+{
+    ob_clean();
+    echo respond($message, $code);
+    exit();
+}
+
 function navigate($name, $params = [])
 {
     global $limanData;
@@ -125,7 +132,6 @@ function requestReverseProxy($hostname,$port)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -133,8 +139,7 @@ function requestReverseProxy($hostname,$port)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -174,7 +179,6 @@ function dispatchJob($function_name,$parameters = [])
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -182,8 +186,7 @@ function dispatchJob($function_name,$parameters = [])
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -219,7 +222,6 @@ function getJobList($function_name)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -227,8 +229,7 @@ function getJobList($function_name)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -277,7 +278,6 @@ function externalAPI($target, $extension_id, $server_id = null, $params=[])
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -285,8 +285,7 @@ function externalAPI($target, $extension_id, $server_id = null, $params=[])
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -322,7 +321,6 @@ function runCommand($command)
         ]);
         return trim($response->getBody()->getContents());
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -330,8 +328,7 @@ function runCommand($command)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -375,7 +372,6 @@ function runScript($name,$parameters = "",$sudo = true)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -383,8 +379,7 @@ function runScript($name,$parameters = "",$sudo = true)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -424,7 +419,6 @@ function putFile($localPath, $remotePath)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -432,8 +426,7 @@ function putFile($localPath, $remotePath)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -485,7 +478,6 @@ function putSession($key,$value)
         $limanData[16][$key] = $value;
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -493,8 +485,7 @@ function putSession($key,$value)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -534,7 +525,6 @@ function getFile($localPath, $remotePath)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -542,8 +532,7 @@ function getFile($localPath, $remotePath)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -591,7 +580,6 @@ function openTunnel($remote_host, $remote_port, $username, $password)
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        ob_clean();
         if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
             $message = 
                 json_decode($exception->getResponse()->getBody()->getContents())
@@ -599,8 +587,7 @@ function openTunnel($remote_host, $remote_port, $username, $password)
         }else{
             $message = $exception->getMessage();
         }
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
@@ -651,9 +638,7 @@ function stopTunnel($remote_host, $remote_port)
             }
             $message = $exception->getMessage();
         }
-        ob_clean();
-        echo respond($message, 201);
-        exit();
+        abort($message, 201);
     }
 }
 
