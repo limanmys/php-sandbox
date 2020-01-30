@@ -84,7 +84,7 @@ function abort($message, $code = "200")
     if($limanData[2] != null){
         echo view('alert', [
             "type" => intval($code) == 200 ? "success" : "danger",
-            "title" => intval($code) == 200 ? _("Başarılı") : __("Hata"),
+            "title" => intval($code) == 200 ? __("Başarılı") : __("Hata"),
             "message" => $message
         ]);
     }else{
