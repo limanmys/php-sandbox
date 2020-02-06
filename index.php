@@ -2,6 +2,20 @@
 ob_start();
 require_once(__DIR__ . "/vendor/autoload.php");
 
+function customErrorHandler($exception, $err_str=null, $error_file=null, $error_line=null) {
+    if($err_str){
+        if($exception==8){
+            return;
+        }
+        $message=$err_str." File: ".$error_file." Line: ".$error_line;
+    }else{
+        $message=$exception->getMessage();
+    }
+    abort($message, 201);
+}
+set_exception_handler('customErrorHandler');
+set_error_handler('customErrorHandler');
+
 use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -14,6 +28,18 @@ $limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
 foreach ($limanData as $key => $item) {
     @$json = json_decode($item, true);
     $limanData[$key] = (json_last_error() == JSON_ERROR_NONE) ? $json : $item;
+}
+
+function restoreHandler()
+{
+    restore_error_handler();
+    restore_exception_handler();
+}
+
+function setHandler()
+{
+    set_exception_handler('customErrorHandler');
+    set_error_handler('customErrorHandler');
 }
 
 function extensionDb($target)
