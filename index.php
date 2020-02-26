@@ -60,6 +60,12 @@ function server()
     return (object) $limanData[3];
 }
 
+function user()
+{
+    global $limanData;
+    return (object) $limanData[17];
+}
+
 // Translation disabled for now.
 function __($str)
 {
