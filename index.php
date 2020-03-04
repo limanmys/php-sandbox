@@ -13,6 +13,7 @@ function customErrorHandler($exception, $err_str=null, $error_file=null, $error_
     }
     abort($message, 201);
 }
+
 set_exception_handler('customErrorHandler');
 set_error_handler('customErrorHandler');
 
@@ -24,10 +25,26 @@ use GuzzleHttp\Cookie\CookieJar;
 $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', shell_exec('cat ' . $argv[1]));
 
 $limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
+/*
+    0. functions.php path 
+    1. target function
+    2. server obj.
+    3. extension obj.
+    4. extensionDB
+    5. requests array
+    6. Api Route
+    7. Navigation Route
+    8. Token
+    9. Permissions
+    10. Locale
+    11. User Obj
+*/
 
 foreach ($limanData as $key => $item) {
-    @$json = json_decode($item, true);
-    $limanData[$key] = (json_last_error() == JSON_ERROR_NONE) ? $json : $item;
+    if(is_string($item)){
+        @$json = json_decode($item, true);
+        $limanData[$key] = (json_last_error() == JSON_ERROR_NONE) ? $json : $item;
+    }
 }
 
 function restoreHandler()
@@ -45,7 +62,7 @@ function setHandler()
 function extensionDb($target)
 {
     global $limanData;
-    return $limanData[5][$target];
+    return $limanData[4][$target];
 }
 
 function extension()
@@ -57,13 +74,13 @@ function extension()
 function server()
 {
     global $limanData;
-    return (object) $limanData[3];
+    return (object) $limanData[2];
 }
-
+ 
 function user()
 {
     global $limanData;
-    return (object) $limanData[17];
+    return (object) $limanData[11];
 }
 
 // Translation disabled for now.
@@ -71,7 +88,7 @@ function __($str)
 {
     global $limanData;
     $folder = dirname(dirname($limanData[0])) . "/lang";
-    $file = $folder . "/" . $limanData[14] . ".json";
+    $file = $folder . "/" . $limanData[10] . ".json";
     if (!is_dir($folder) || !is_file($file)) {
         return $str;
     }
@@ -84,7 +101,7 @@ function __($str)
 function request($target = null)
 {
     global $limanData;
-    $tempRequest = $limanData[7];
+    $tempRequest = $limanData[5];
     if ($target) {
         if (array_key_exists($target, $tempRequest)) {
             return html_entity_decode($tempRequest[$target]);
@@ -98,7 +115,7 @@ function request($target = null)
 function API($target)
 {
     global $limanData;
-    return $limanData[9] . "/" . $target;
+    return $limanData[6] . "/" . $target;
 }
 
 function respond($message, $code = "200")
@@ -113,7 +130,7 @@ function abort($message, $code = "200")
 {
     global $limanData;
     ob_clean();
-    if($limanData[2] != null){
+    if($limanData[1] != null){
         echo view('alert', [
             "type" => intval($code) == 200 ? "success" : "danger",
             "title" => intval($code) == 200 ? __("Başarılı") : __("Hata"),
@@ -135,7 +152,7 @@ function navigate($name, $params = [])
             $args = $args . "&$key=$param";
         }
     }
-    return $limanData[10] . '/' . $name . $args;
+    return $limanData[7] . '/' . $name . $args;
 }
 
 function view($name, $params = [])
@@ -145,31 +162,40 @@ function view($name, $params = [])
     return $blade->render($name, $params);
 }
 
-function requestReverseProxy($hostname,$port)
+function limanInternalRequest($url,$data, $server_id = null,$extension_id = null)
 {
     global $limanData;
     $client = new Client([
         'verify' => false
     ]);
+    $extraParams = [];
+    foreach($params as $key => $value){
+        $extraParams[] = [
+            "name" => $key,
+            "contents" => $value
+        ];
+    }
+    $server_id = ($server_id) ? $server_id : server()->id;
+    $extension_id = ($extension_id) ? $extension_id : extension()->id;
     try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/reverseProxyRequest', [
+        $response = $client->request('POST', "https://127.0.0.1/lmn/private/$url", [
             'headers' => [
                 'Accept'     => 'application/json',
             ],
-            "multipart" => [
+            "multipart" => array_merge($extraParams, [
                 [
-                    "name" => "hostname",
-                    "contents" => $hostname,
+                    "name" => "extension_id",
+                    "contents" => $extension_id
                 ],
                 [
-                    "name" => "port",
-                    "contents" => $port
+                    "name" => "server_id",
+                    "contents" => $server_id,
                 ],
                 [
                     "name" => "token",
-                    "contents" => $limanData[11]
+                    "contents" => $limanData[8]
                 ]
-            ],
+            ]),
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
@@ -182,102 +208,36 @@ function requestReverseProxy($hostname,$port)
         }
         abort($message, 201);
     }
+}
+
+function requestReverseProxy($hostname,$port)
+{
+    return limanInternalRequest('reverseProxyRequest',[
+        "hostname" => $hostname,
+        "port" => $port
+    ]); 
 }
 
 function dispatchJob($function_name,$parameters = [])
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('dispatchJob',[
+        "function_name" => $function_name,
+        "parameters" => json_decode($parameters)
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/dispatchJob', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12]
-                ],
-                [
-                    "name" => "function_name",
-                    "contents" => $function_name,
-                ],
-                [
-                    "name" => "parameters",
-                    "contents" => json_encode($parameters)
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function getJobList($function_name)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('getJobList',[
+        "function_name" => $function_name,
+        "parameters" => json_decode($parameters)
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/getJobList', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12]
-                ],
-                [
-                    "name" => "function_name",
-                    "contents" => $function_name,
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function publicPath($path)
 {
     global $limanData;
-    return str_replace("eklenti2", "eklenti", $limanData[9]) . "/public/" . base64_encode($path);
+    return str_replace("eklenti2", "eklenti", $limanData[7]) . "/public/" . base64_encode($path);
 }
 
 function externalAPI($target, $extension_id, $server_id = null, $params=[])
@@ -332,143 +292,26 @@ function externalAPI($target, $extension_id, $server_id = null, $params=[])
 
 function runCommand($command)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('runCommandApi',[
+        "command" => $command
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/runCommandApi', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
-                ],
-                [
-                    "name" => "command",
-                    "contents" => $command
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ]
-            ],
-        ]);
-        return trim($response->getBody()->getContents());
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function runScript($name,$parameters = "",$sudo = true)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('runScriptApi',[
+        "scriptName" => $name,
+        "runAsRoot" => $sudo ? "yes" : "no",
+        "parameters" => $parameters
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/runScriptApi', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "scriptName",
-                    "contents" => $name,
-                ],
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
-                ],
-                [
-                    "name" => "runAsRoot",
-                    "contents" => $sudo ? "yes" : "no",
-                ],
-                [
-                    "name" => "parameters",
-                    "contents" => $parameters
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function putFile($localPath, $remotePath)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('putFileApi',[
+        "localPath" => $localPath,
+        "remotePath" => $remotePath,
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/putFileApi', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "localPath",
-                    "contents" => $localPath
-                ],
-                [
-                    "name" => "remotePath",
-                    "contents" => $remotePath
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function sudo()
@@ -478,209 +321,30 @@ function sudo()
 }
 
 
-function session($key = null)
-{
-    global $limanData;
-    if(array_key_exists($key,$limanData[16])){
-        return $limanData[16][$key];
-    }
-    if($key == null){
-        return $limanData[16];
-    }
-    return null;
-}
-
-function putSession($key,$value)
-{
-    global $limanData;
-    $cookieJar = CookieJar::fromArray([
-        'liman_session' => $limanData[15]
-    ], '127.0.0.1');
-    $client = new Client([
-        'verify' => false,
-        'cookies' => $cookieJar
-    ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/putSession', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "session_key",
-                    "contents" => $key,
-                ],
-                [
-                    "name" => "value",
-                    "contents" => json_encode($value)
-                ]
-            ],
-        ]);
-        $limanData[16][$key] = $value;
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
-}
-
 function getFile($localPath, $remotePath)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('getFileApi',[
+        "localPath" => $localPath,
+        "remotePath" => $remotePath,
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/getFileApi', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "localPath",
-                    "contents" => $localPath
-                ],
-                [
-                    "name" => "remotePath",
-                    "contents" => $remotePath
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function openTunnel($remote_host, $remote_port, $username, $password)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('openTunnel',[
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port,
+        "username" => $username,
+        "password" => $password
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/openTunnel', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "remote_host",
-                    "contents" => $remote_host
-                ],
-                [
-                    "name" => "remote_port",
-                    "contents" => $remote_port
-                ],
-                [
-                    "name" => "username",
-                    "contents" => $username
-                ],
-                [
-                    "name" => "password",
-                    "contents" => $password
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function stopTunnel($remote_host, $remote_port)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('stopTunnel',[
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port,
     ]);
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/stopTunnel', [
-            'timeout' => 0.1,
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => [
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "remote_host",
-                    "contents" => $remote_host
-                ],
-                [
-                    "name" => "remote_port",
-                    "contents" => $remote_port
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData[12],
-                ]
-            ],
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            if($exception->getHandlerContext()["errno"] == 28){
-                return "ok";
-            }
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function getPath($filename = null)
@@ -692,36 +356,37 @@ function getPath($filename = null)
 function can($name)
 {
     global $limanData;
-    if ($limanData[13] == "admin") {
+    if ($limanData[9] == "admin") {
         return true;
     }
-    return in_array($name, $limanData[13]);
+    return in_array($name, $limanData[9]);
 }
 
-$functions = get_defined_functions();
-$keys = array_keys($functions['user']);
-$last_index = array_pop($keys);
+
+// $functions = get_defined_functions();
+// $keys = array_keys($functions['user']);
+// $last_index = array_pop($keys);
 
 // Functions PHP
 if (is_file($limanData[0])) {
     include($limanData[0]);
 }
 
-$functions = get_defined_functions();
-$new_functions = array_slice($functions['user'], $last_index + 1);
-if ($limanData[2] == null) {
-    set_error_handler(function () {
-        return "error";
-    });
-    echo call_user_func($limanData[8]);
-    restore_error_handler();
-} else {
-    shell_exec("mkdir /tmp/liman" . $limanData[12]);
-    $blade = new Blade([
-        dirname($limanData[0]),
-        __DIR__ . "/views/"
-    ], "/tmp/liman" . $limanData[12]);
-    echo $blade->render($limanData[2], [
-        "data" => $limanData[6]
-    ]);
-}
+echo call_user_func($limanData[1]);
+
+// $functions = get_defined_functions();
+// $new_functions = array_slice($functions['user'], $last_index + 1);
+// if ($limanData[2] == null) {
+//     set_error_handler(function () {
+//         return "error";
+//     });
+//     echo call_user_func($limanData[8]);
+//     restore_error_handler();
+// } else {
+//     shell_exec("mkdir -p /tmp/liman" . extension()->name);
+//     $blade = new Blade([
+//         dirname($limanData[0]),
+//         __DIR__ . "/views/"
+//     ], "/tmp/liman/" . extension()->name);
+//     echo $blade->render($limanData[1]);
+// }
