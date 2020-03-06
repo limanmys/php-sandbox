@@ -25,6 +25,7 @@ use GuzzleHttp\Cookie\CookieJar;
 $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', shell_exec('cat ' . $argv[1]));
 
 $limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
+
 /*
     0. functions.php path 
     1. target function
@@ -362,31 +363,8 @@ function can($name)
     return in_array($name, $limanData[9]);
 }
 
-
-// $functions = get_defined_functions();
-// $keys = array_keys($functions['user']);
-// $last_index = array_pop($keys);
-
-// Functions PHP
 if (is_file($limanData[0])) {
     include($limanData[0]);
 }
 
 echo call_user_func($limanData[1]);
-
-// $functions = get_defined_functions();
-// $new_functions = array_slice($functions['user'], $last_index + 1);
-// if ($limanData[2] == null) {
-//     set_error_handler(function () {
-//         return "error";
-//     });
-//     echo call_user_func($limanData[8]);
-//     restore_error_handler();
-// } else {
-//     shell_exec("mkdir -p /tmp/liman" . extension()->name);
-//     $blade = new Blade([
-//         dirname($limanData[0]),
-//         __DIR__ . "/views/"
-//     ], "/tmp/liman/" . extension()->name);
-//     echo $blade->render($limanData[1]);
-// }
