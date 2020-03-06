@@ -8,7 +8,7 @@
                     {{__($title)}}
                 @endisset
             </h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" aria-label="Close" onclick="closeCurrentModal('@isset($id){{$id}}@endisset')">
             <span aria-hidden="true">&times;</span>
             </button>
         </div>

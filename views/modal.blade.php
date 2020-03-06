@@ -1,4 +1,5 @@
-<div class="modal fade" id="@isset($id){{$id}}@endisset">
+@php($id = isset($id) ? $id : bin2hex(random_bytes(10)))
+<div class="modal fade" id="{{$id}}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -7,7 +8,7 @@
                         {{__($title)}}
                     @endisset                    
                 </h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" aria-label="Close" onclick="closeCurrentModal('{{$id}}')">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
