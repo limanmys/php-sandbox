@@ -25,8 +25,8 @@
         @if(explode(":", $input)[1] == "hidden")
             @if(explode(":", $input)[1] == "checkbox")
                 <div class="form-check">
-                    <input id="{{explode(":", $input)[0]}}" class="form-check-input" type="checkbox" name="{{explode(":", $input)[0]}}">
-                    <label for="{{explode(":", $input)[0]}}" class="form-check-label">{{__($name)}}</label>
+                    <input id="{{explode(":", $input)[0]}}" class="form-check-input @if(isset($random,$id)){{$random}} {{$id}}@endif" type="checkbox" name="{{explode(":", $input)[0]}}">
+                    <label for="{{explode(":", $input)[0]}}" class="form-check-label @if(isset($random,$id)){{$random}} {{$id}}@endif">{{__($name)}}</label>
                 </div>
             @else
                 <input type="{{explode(":", $input)[1]}}" name="{{explode(":", $input)[0]}}" placeholder="{{__($placeholder)}}"
@@ -35,8 +35,8 @@
         @elseif(isset($disabled))
             @if(explode(":", $input)[1] == "checkbox")
                 <div class="form-check">
-                    <input id="{{explode(":", $input)[0]}}" class="form-check-input" type="checkbox" name="{{explode(":", $input)[0]}}">
-                    <label for="{{explode(":", $input)[0]}}" class="form-check-label">{{__($name)}}</label>
+                    <input id="{{explode(":", $input)[0]}}" class="form-check-input @if(isset($random,$id)){{$random}} {{$id}}@endif" type="checkbox" name="{{explode(":", $input)[0]}}">
+                    <label for="{{explode(":", $input)[0]}}" class="form-check-label @if(isset($random,$id)){{$random}} {{$id}}@endif">{{__($name)}}</label>
                 </div>
             @else
                 <label class="@if(isset($random,$id)){{$random}} {{$id}}@endif" style="padding-top: 15px;">{{__(explode(":",$name)[0])}}</label>
@@ -64,8 +64,8 @@
         @else
             @if(explode(":", $input)[1] == "checkbox")
                 <div class="form-check">
-                    <input id="{{explode(":", $input)[0]}}" class="form-check-input" type="checkbox" name="{{explode(":", $input)[0]}}">
-                    <label for="{{explode(":", $input)[0]}}" class="form-check-label">{{__($name)}}</label>
+                    <input id="{{explode(":", $input)[0]}}" class="form-check-input @if(isset($random,$id)){{$random}} {{$id}}@endif" type="checkbox" name="{{explode(":", $input)[0]}}">
+                    <label for="{{explode(":", $input)[0]}}" class="form-check-label @if(isset($random,$id)){{$random}} {{$id}}@endif">{{__($name)}}</label>
                 </div>
             @else
                 @if(substr(explode(":", $input)[0],0,2) != "d-")

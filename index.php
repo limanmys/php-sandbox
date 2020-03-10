@@ -39,6 +39,7 @@ $limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
     9. Permissions
     10. Locale
     11. User Obj
+    12. Public Path Route
 */
 
 foreach ($limanData as $key => $item) {
@@ -238,7 +239,7 @@ function getJobList($function_name)
 function publicPath($path)
 {
     global $limanData;
-    return str_replace("eklenti2", "eklenti", $limanData[7]) . "/public/" . base64_encode($path);
+    return $limanData[12] . "/" .  base64_encode($path);
 }
 
 function externalAPI($target, $extension_id, $server_id = null, $params=[])
