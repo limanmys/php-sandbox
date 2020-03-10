@@ -171,7 +171,7 @@ function limanInternalRequest($url,$data, $server_id = null,$extension_id = null
         'verify' => false
     ]);
     $extraParams = [];
-    foreach($params as $key => $value){
+    foreach($data as $key => $value){
         $extraParams[] = [
             "name" => $key,
             "contents" => $value
