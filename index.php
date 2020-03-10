@@ -20,7 +20,6 @@ set_error_handler('customErrorHandler');
 use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Cookie\CookieJar;
 
 $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', shell_exec('cat ' . $argv[1]));
 
@@ -40,6 +39,7 @@ $limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
     10. Locale
     11. User Obj
     12. Public Path Route
+    13. Is Request Ajax
 */
 
 foreach ($limanData as $key => $item) {
@@ -132,7 +132,7 @@ function abort($message, $code = "200")
 {
     global $limanData;
     ob_clean();
-    if($limanData[1] != null){
+    if(!$limanData[12]){
         echo view('alert', [
             "type" => intval($code) == 200 ? "success" : "danger",
             "title" => intval($code) == 200 ? __("Başarılı") : __("Hata"),
