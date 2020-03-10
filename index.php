@@ -178,7 +178,7 @@ function limanInternalRequest($url,$data, $server_id = null,$extension_id = null
         ];
     }
     $server_id = ($server_id) ? $server_id : server()->id;
-    $extension_id = ($extension_id) ? $extension_id : extension()->id;
+    $extension_id = ($extension_id) ? $extension_id : $limanData[3]->id;
     try {
         $response = $client->request('POST', "https://127.0.0.1/lmn/private/$url", [
             'headers' => [
