@@ -1,0 +1,20 @@
+{
+  "name": "Liman Sandbox app",
+  "description": "",
+  "homepage": "https://liman.dev",
+  "version": "1.0",
+  "type": "project",
+  "require": {
+    "jenssegers/blade": "^1.1.0.0",
+    "larapack/dd": "^1.1",
+    "phpseclib/phpseclib": "~2.0",
+    "guzzlehttp/guzzle": "^6.3",
+    "ext-json" : "*",
+    "catfan/medoo": "^1.6",
+    "ext-openssl": "*",
+    "icewind/smb": "^3.1",
+    "mongodb/mongodb": "^1.4",
+    "mpdf/mpdf": "^8.0",
+    "ext-ldap": "*"
+  }
+}
