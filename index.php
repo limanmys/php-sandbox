@@ -161,7 +161,11 @@ function navigate($name, $params = [])
 function view($name, $params = [])
 {
     global $limanData;
-    $blade = new Blade([dirname($limanData[0]), __DIR__ . "/views/"], "/tmp");
+    $path = "/tmp/" . $limanData[3]->id;
+    if(!is_dir($path)){
+        mkdir($path);
+    }
+    $blade = new Blade([dirname($limanData[0]), __DIR__ . "/views/"], $path);
     return $blade->render($name, $params);
 }
 
