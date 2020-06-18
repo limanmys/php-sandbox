@@ -261,54 +261,14 @@ function publicPath($path)
     return $limanData[12] . "/" .  base64_encode($path);
 }
 
-function externalAPI($target, $extension_id, $server_id = null, $params=[])
+function externalAPI($target, $target_extension_name, $target_server_id,  $params = [])
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('extensionApi',[
+        "target_function" => $target,
+        "target_extension_name" => $target_extension_name,
+        "target_server_id" => $target_server_id,
+        "extra_params" => json_encode($params)
     ]);
-    $extraParams = [];
-    foreach($params as $key => $value){
-        $extraParams[] = [
-            "name" => $key,
-            "contents" => $value
-        ];
-    }
-    try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/extensionApi', [
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => array_merge($extraParams, [
-                [
-                    "name" => "server_id",
-                    "contents" => ($server_id) ? $server_id : server()->id,
-                ],
-                [
-                    "name" => "extension_id",
-                    "contents" => $extension_id
-                ],
-                [
-                    "name" => "target",
-                    "contents" => $target
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData[11]
-                ]
-            ]),
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function runCommand($command)
