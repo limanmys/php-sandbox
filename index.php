@@ -133,7 +133,7 @@ function abort($message, $code = "200")
 {
     global $limanData;
     ob_clean();
-    if(!$limanData[12]){
+    if(!$limanData[13]){
         echo view('alert', [
             "type" => intval($code) == 200 ? "success" : "danger",
             "title" => intval($code) == 200 ? __("Başarılı") : __("Hata"),
