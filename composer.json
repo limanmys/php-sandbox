@@ -15,6 +15,7 @@
     "icewind/smb": "^3.1",
     "mongodb/mongodb": "^1.4",
     "mpdf/mpdf": "^8.0",
-    "ext-ldap": "*"
+    "ext-ldap": "*",
+    "mervick/aes-everywhere": "^1.1"
   }
 }

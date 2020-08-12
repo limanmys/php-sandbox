@@ -20,10 +20,12 @@ set_error_handler('customErrorHandler');
 use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use mervick\aesEverywhere\AES256;
 
-$decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', shell_exec('cat ' . $argv[1]));
+$decrypted = AES256::decrypt($argv[2], shell_exec('cat ' . $argv[1]));
+// $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', );
 
-$limanData = json_decode(base64_decode(substr($decrypted, 16)), false, 512);
+$limanData = json_decode($decrypted, false, 512);
 
 /*
     0. functions.php path 

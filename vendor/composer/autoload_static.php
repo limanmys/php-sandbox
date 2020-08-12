@@ -30,6 +30,11 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         array (
             'phpseclib\\' => 10,
         ),
+        'm' => 
+        array (
+            'mervick\\aesEverywhere\\tests\\' => 28,
+            'mervick\\aesEverywhere\\' => 22,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php72\\' => 23,
@@ -95,6 +100,14 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'phpseclib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
+        'mervick\\aesEverywhere\\tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mervick/aes-everywhere/php/tests',
+        ),
+        'mervick\\aesEverywhere\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mervick/aes-everywhere/php/src',
         ),
         'Symfony\\Polyfill\\Php72\\' => 
         array (
