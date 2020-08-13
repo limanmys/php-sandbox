@@ -14,8 +14,8 @@ function customErrorHandler($exception, $err_str=null, $error_file=null, $error_
     abort($message, 201);
 }
 
-set_exception_handler('customErrorHandler');
-set_error_handler('customErrorHandler');
+// set_exception_handler('customErrorHandler');
+// set_error_handler('customErrorHandler');
 
 use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
@@ -25,7 +25,7 @@ use mervick\aesEverywhere\AES256;
 $decrypted = AES256::decrypt($argv[2], shell_exec('cat ' . $argv[1]));
 // $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', );
 
-$limanData = json_decode($decrypted, false, 512);
+$limanData = json_decode($decrypted, true, 512);
 
 /*
     0. functions.php path 
@@ -67,7 +67,7 @@ function setHandler()
 function extensionDb($target)
 {
     global $limanData;
-    return $limanData[4][$target];
+    return $limanData["settings"][$target];
 }
 
 function extension()
@@ -79,7 +79,7 @@ function extension()
 function server()
 {
     global $limanData;
-    return (object) $limanData[2];
+    return (object) $limanData["server"];
 }
  
 function user()
@@ -92,8 +92,8 @@ function user()
 function __($str)
 {
     global $limanData;
-    $folder = dirname(dirname($limanData[0])) . "/lang";
-    $file = $folder . "/" . $limanData[10] . ".json";
+    $folder = dirname(dirname($limanData["functionsPath"])) . "/lang";
+    $file = $folder . "/" . $limanData["locale"] . ".json";
     if (!is_dir($folder) || !is_file($file)) {
         return $str;
     }
@@ -106,7 +106,7 @@ function __($str)
 function request($target = null)
 {
     global $limanData;
-    $tempRequest = $limanData[5];
+    $tempRequest = $limanData["requestData"];
     if ($target) {
         if (array_key_exists($target, $tempRequest)) {
             return html_entity_decode($tempRequest[$target]);
@@ -119,8 +119,7 @@ function request($target = null)
 
 function API($target)
 {
-    global $limanData;
-    return $limanData[6] . "/" . $target;
+    return "/extensionRun/" . $target;
 }
 
 function respond($message, $code = "200")
@@ -135,7 +134,7 @@ function abort($message, $code = "200")
 {
     global $limanData;
     ob_clean();
-    if(!$limanData[13]){
+    if(!boolval($limanData["ajax"])){
         echo view('alert', [
             "type" => intval($code) == 200 ? "success" : "danger",
             "title" => intval($code) == 200 ? __("Başarılı") : __("Hata"),
@@ -163,11 +162,11 @@ function navigate($name, $params = [])
 function view($name, $params = [])
 {
     global $limanData;
-    $path = "/tmp/" . $limanData[3]->id;
+    $path = "/tmp/" . $limanData["extension"]["id"];
     if(!is_dir($path)){
         mkdir($path);
     }
-    $blade = new Blade([dirname($limanData[0]), __DIR__ . "/views/"], $path);
+    $blade = new Blade([dirname($limanData["functionsPath"]), __DIR__ . "/views/"], $path);
     return $blade->render($name, $params);
 }
 
@@ -381,11 +380,12 @@ function stopTunnel($remote_host, $remote_port)
 function getPath($filename = null)
 {
     global $limanData;
-    return dirname(dirname($limanData[0])) . "/" . $filename;
+    return dirname(dirname($limanData["functionsPath"])) . "/" . $filename;
 }
 
 function can($name)
 {
+    return true;
     global $limanData;
     if ($limanData[9] == "admin") {
         return true;
@@ -415,11 +415,11 @@ function sendLog($title,$message)
     ]);
 }
 
-if (is_file($limanData[0])) {
-    include($limanData[0]);
+if (is_file($limanData["functionsPath"])) {
+    include($limanData["functionsPath"]);
 }
 
-if(!function_exists($limanData[1])){
+if(!function_exists($limanData["function"])){
     abort("İstediğiniz sayfa bulunamadı",504);
 }
-echo call_user_func($limanData[1]);
+echo call_user_func($limanData["function"]);
