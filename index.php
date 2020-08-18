@@ -156,7 +156,7 @@ function navigate($name, $params = [])
             $args = $args . "&$key=$param";
         }
     }
-    return $limanData[7] . '/' . $name . $args;
+    return $limanData["navigationRoute"] . '/' . $name . $args;
 }
 
 function view($name, $params = [])
