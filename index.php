@@ -85,7 +85,7 @@ function server()
 function user()
 {
     global $limanData;
-    return (object) $limanData[11];
+    return (object) $limanData["user"];
 }
 
 // Translation disabled for now.
@@ -126,7 +126,7 @@ function respond($message, $code = "200")
 {
     return json_encode([
         "message" => $message,
-        "status" => $code
+        "status" => intval($code)
     ]);
 }
 
@@ -184,7 +184,7 @@ function limanInternalRequest($url,$data, $server_id = null,$extension_id = null
         ];
     }
     $server_id = ($server_id) ? $server_id : server()->id;
-    $extension_id = ($extension_id) ? $extension_id : $limanData[3]->id;
+    $extension_id = ($extension_id) ? $extension_id : $limanData["extension"]["id"];
     try {
         $response = $client->request('POST', "https://127.0.0.1/lmn/private/$url", [
             'headers' => [
@@ -201,7 +201,7 @@ function limanInternalRequest($url,$data, $server_id = null,$extension_id = null
                 ],
                 [
                     "name" => "token",
-                    "contents" => $limanData[8]
+                    "contents" => $limanData["token"]
                 ]
             ]),
         ]);
@@ -236,9 +236,9 @@ function dispatchJob($function_name,$parameters = [])
         $response = $client->request('POST', 'https://127.0.0.1/lmn/private/dispatchJob', [
             "json" => [
                 "server_id" => server()->id,
-                "extension_id" => $limanData[3]->id,
+                "extension_id" => $limanData["extension"]->id,
                 "function_name" => $function_name,
-                "token" => $limanData[8],
+                "token" => $limanData["token"],
                 "parameters" => $parameters
             ],
         ]);
@@ -349,7 +349,7 @@ function stopTunnel($remote_host, $remote_port)
             "multipart" => array_merge($extraParams, [
                 [
                     "name" => "extension_id",
-                    "contents" => $limanData[3]->id
+                    "contents" => $limanData["extension"]->id
                 ],
                 [
                     "name" => "server_id",
@@ -357,7 +357,7 @@ function stopTunnel($remote_host, $remote_port)
                 ],
                 [
                     "name" => "token",
-                    "contents" => $limanData[8]
+                    "contents" => $limanData["token"]
                 ]
             ]),
         ]);
