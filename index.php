@@ -272,6 +272,11 @@ function externalAPI($target, $target_extension_name, $target_server_id,  $param
     ]);
 }
 
+function getLicense() {
+    global $limanData;
+    return $limanData["license"];
+}
+
 function runCommand($command)
 {
     return limanInternalRequest('runCommandApi',[
