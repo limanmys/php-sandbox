@@ -14,8 +14,8 @@ function customErrorHandler($exception, $err_str=null, $error_file=null, $error_
     abort($message, 201);
 }
 
-// set_exception_handler('customErrorHandler');
-// set_error_handler('customErrorHandler');
+set_exception_handler('customErrorHandler');
+set_error_handler('customErrorHandler');
 
 use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
@@ -23,7 +23,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use mervick\aesEverywhere\AES256;
 
 $decrypted = AES256::decrypt($argv[2], shell_exec('cat ' . $argv[1]));
-// $decrypted = openssl_decrypt($argv[2], 'aes-256-cfb8', );
 
 $limanData = json_decode($decrypted, true, 512);
 
@@ -259,7 +258,7 @@ function getJobList($function_name)
 function publicPath($path)
 {
     global $limanData;
-    return $limanData[12] . "/" .  base64_encode($path);
+    return $limanData["publicPath"] . base64_encode($path);
 }
 
 function externalAPI($target, $target_extension_name, $target_server_id,  $params = [])
@@ -390,12 +389,11 @@ function getPath($filename = null)
 
 function can($name)
 {
-    return true;
     global $limanData;
-    if ($limanData[9] == "admin") {
+    if ($limanData["user"]["status"] == "1") {
         return true;
     }
-    return in_array($name, $limanData[9]);
+    return in_array($name, $limanData["permissions"]);
 }
 
 function sendNotification($title,$message, $type = "notify")
