@@ -407,15 +407,7 @@ function sendNotification($title,$message, $type = "notify")
 
 function sendLog($title,$message)
 {
-    if($message == null){
-        abort("Mesaj boş olamaz!",504);
-    }
-    global $limanData;
-    return limanInternalRequest('sendLog',[
-        "log_id" => $limanData[14],
-        "message" => $message,
-        "title" => $title
-    ]);
+    return true;
 }
 
 if (is_file($limanData["functionsPath"])) {
