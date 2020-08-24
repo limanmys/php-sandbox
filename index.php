@@ -26,24 +26,6 @@ $decrypted = AES256::decrypt($argv[2], shell_exec('cat ' . $argv[1]));
 
 $limanData = json_decode($decrypted, true, 512);
 
-/*
-    0. functions.php path 
-    1. target function
-    2. server obj.
-    3. extension obj.
-    4. extensionDB
-    5. requests array
-    6. Api Route
-    7. Navigation Route
-    8. Token
-    9. Permissions
-    10. Locale
-    11. User Obj
-    12. Public Path Route
-    13. Is Request Ajax
-    14. Current Log Object Id
-*/
-
 foreach ($limanData as $key => $item) {
     if(is_string($item)){
         @$json = json_decode($item, true);
@@ -87,7 +69,6 @@ function user()
     return (object) $limanData["user"];
 }
 
-// Translation disabled for now.
 function __($str)
 {
     global $limanData;
