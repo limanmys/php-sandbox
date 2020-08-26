@@ -102,6 +102,12 @@ function API($target)
     return "/extensionRun/" . $target;
 }
 
+function getToken()
+{
+    global $limanData;
+    return $limanData["token"];
+}
+
 function respond($message, $code = "200")
 {
     return json_encode([
