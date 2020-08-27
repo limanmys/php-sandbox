@@ -215,18 +215,15 @@ function requestReverseProxy($hostname,$port)
 function dispatchJob($function_name,$parameters = [])
 {
     global $limanData;
-    $client = new Client([
-        'verify' => false,
-    ]);
+    $client = new Client();
+    $parameters["server_id"] = server()->id;
+    $parameters["extension_id"] = $limanData["extension"]["id"];
+    $parameters["lmntargetFunction"] = $function_name;
+    $parameters["token"] = $limanData["token"];
+
     try {
-        $response = $client->request('POST', 'https://127.0.0.1/lmn/private/dispatchJob', [
-            "json" => [
-                "server_id" => server()->id,
-                "extension_id" => $limanData["extension"]->id,
-                "function_name" => $function_name,
-                "token" => $limanData["token"],
-                "parameters" => $parameters
-            ],
+        $response = $client->request('POST', 'http://127.0.0.1:5454/backgroundJob', [
+            "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
