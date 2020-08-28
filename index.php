@@ -214,15 +214,20 @@ function requestReverseProxy($hostname,$port)
 
 function dispatchJob($function_name,$parameters = [])
 {
+    return renderEngineRequest($function_name,"backgroundJob",$parameters);
+}
+
+function renderEngineRequest($function,$url,$parameters = [], $server_id = null, $extension_id = null)
+{
     global $limanData;
     $client = new Client();
-    $parameters["server_id"] = server()->id;
-    $parameters["extension_id"] = $limanData["extension"]["id"];
-    $parameters["lmntargetFunction"] = $function_name;
+    $parameters["server_id"] = $server_id ? $server_id : server()->id;
+    $parameters["extension_id"] = $extension_id ? $extension_id : $limanData["extension"]["id"];
     $parameters["token"] = $limanData["token"];
+    $parameters["lmntargetFunction"] = $function;
 
     try {
-        $response = $client->request('POST', 'http://127.0.0.1:5454/backgroundJob', [
+        $response = $client->request('POST', "http://127.0.0.1:5454/$url", [
             "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
@@ -231,28 +236,21 @@ function dispatchJob($function_name,$parameters = [])
     }
 }
 
+function externalAPI($target, $target_extension_name, $target_server_id,  $params = [])
+{
+    return renderEngineRequest($target,"externalAPI",$params, $target_server_id,$target_extension_name);
+}
+
+// @deprecated
 function getJobList($function_name)
 {
-    return limanInternalRequest('getJobList',[
-        "function_name" => $function_name,
-        "parameters" => json_decode($parameters)
-    ]);
+    return [];
 }
 
 function publicPath($path)
 {
     global $limanData;
     return $limanData["publicPath"] . base64_encode($path);
-}
-
-function externalAPI($target, $target_extension_name, $target_server_id,  $params = [])
-{
-    return limanInternalRequest('extensionApi',[
-        "target_function" => $target,
-        "target_extension_name" => $target_extension_name,
-        "target_server_id" => $target_server_id,
-        "extra_params" => json_encode($params)
-    ]);
 }
 
 function getLicense() {
