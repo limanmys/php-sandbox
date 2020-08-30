@@ -1,0 +1,27 @@
+{
+    "name": "mervick/aes-everywhere",
+    "description": "Aes Everywhere - Cross Language Encryption Library (AES/256/CBC/PKCS5)",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrey Izman",
+            "email": "izmanw@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "vendor-dir": "vendor",
+        "preferred-install": "dist",
+        "process-timeout": 1800
+    },
+    "autoload": {
+        "psr-4": {
+            "mervick\\aesEverywhere\\tests\\": "php//tests//",
+            "mervick\\aesEverywhere\\": "php//src//"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5"
+    }
+}

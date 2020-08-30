@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "422fb04f0f7ee6575884d8a907689a5f",
+    "content-hash": "26fde75df68eb808181dc9d51e4acb87",
     "packages": [
         {
             "name": "catfan/medoo",
@@ -777,6 +777,43 @@
             ],
             "description": "`dd` is a helper method in Laravel. This package will add the `dd` to your application.",
             "time": "2016-12-15T09:34:34+00:00"
+        },
+        {
+            "name": "mervick/aes-everywhere",
+            "version": "v1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mervick/aes-everywhere.git",
+                "reference": "5b0078aa579b5f4775979ec9a1b8b3c8c2debdbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mervick/aes-everywhere/zipball/5b0078aa579b5f4775979ec9a1b8b3c8c2debdbc",
+                "reference": "5b0078aa579b5f4775979ec9a1b8b3c8c2debdbc",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mervick\\aesEverywhere\\tests\\": "php//tests//",
+                    "mervick\\aesEverywhere\\": "php//src//"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrey Izman",
+                    "email": "izmanw@gmail.com"
+                }
+            ],
+            "description": "Aes Everywhere - Cross Language Encryption Library (AES/256/CBC/PKCS5)",
+            "time": "2019-09-15T19:41:29+00:00"
         },
         {
             "name": "mongodb/mongodb",
@@ -1884,7 +1921,9 @@
     "prefer-lowest": false,
     "platform": {
         "ext-json": "*",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-ldap": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
