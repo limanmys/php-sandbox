@@ -312,55 +312,10 @@ function openTunnel($remote_host, $remote_port, $username, $password)
 
 function stopTunnel($remote_host, $remote_port)
 {
-    global $limanData;
-    $client = new Client([
-        'verify' => false
+    return limanInternalRequest('stopTunnel',[
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port
     ]);
-    $extraParams = [
-        [
-            "name" => "remote_host",
-            "contents" => $remote_host
-        ],
-        [
-            "name" => "remote_port",
-            "contents" => $remote_port
-        ]
-    ];
-    try {
-        $response = $client->request('POST', "https://127.0.0.1/lmn/private/stopTunnel", [
-            'timeout' => 0.1,
-            'headers' => [
-                'Accept'     => 'application/json',
-            ],
-            "multipart" => array_merge($extraParams, [
-                [
-                    "name" => "extension_id",
-                    "contents" => $limanData["extension"]->id
-                ],
-                [
-                    "name" => "server_id",
-                    "contents" => server()->id,
-                ],
-                [
-                    "name" => "token",
-                    "contents" => $limanData["token"]
-                ]
-            ]),
-        ]);
-        return $response->getBody()->getContents();
-    } catch (GuzzleException $exception) {
-        if($exception->getResponse() && $exception->getResponse()->getStatusCode() > 400){
-            $message = 
-                json_decode($exception->getResponse()->getBody()->getContents())
-                ->message;
-        }else{
-            if($exception->getHandlerContext()["errno"] == 28){
-                return "ok";
-            }
-            $message = $exception->getMessage();
-        }
-        abort($message, 201);
-    }
 }
 
 function getPath($filename = null)
