@@ -260,9 +260,15 @@ function getLicense() {
 
 function runCommand($command)
 {
-    return limanInternalRequest('runCommandApi',[
-        "command" => $command
-    ]);
+    if (server()->os == "windows") {
+        return limanInternalRequest('runCommandApi',[
+            "command" => $command
+        ]);
+    }else{
+        return renderEngineRequest('','runCommand',[
+            "command" => $command
+        ]);
+    }
 }
 
 function runScript($name,$parameters = "",$sudo = true)
@@ -276,11 +282,31 @@ function runScript($name,$parameters = "",$sudo = true)
 
 function putFile($localPath, $remotePath)
 {
-    return limanInternalRequest('putFileApi',[
-        "localPath" => $localPath,
-        "remotePath" => $remotePath,
+    if (server()->os == "windows") {
+        return limanInternalRequest('putFileApi',[
+            "localPath" => $localPath,
+            "remotePath" => $remotePath,
+        ]);
+    }else{
+        return renderEngineRequest('','putFile',[
+            "localPath" => $localPath,
+            "remotePath" => $remotePath,
+        ]);
+    }
+}
+
+function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command)
+{
+    return renderEngineRequest('','runOutsideCommand',[
+        "connection_type" => $connectionType,
+        "username" => $username,
+        "password" => $password,
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port,
+        "command" => $command
     ]);
 }
+
 
 function sudo()
 {
@@ -294,20 +320,37 @@ function sudo()
 
 function getFile($localPath, $remotePath)
 {
-    return limanInternalRequest('getFileApi',[
-        "localPath" => $localPath,
-        "remotePath" => $remotePath,
-    ]);
+    if (server()->os == "windows") {
+        return limanInternalRequest('getFileApi',[
+            "localPath" => $localPath,
+            "remotePath" => $remotePath,
+        ]);
+    }else{
+        return renderEngineRequest('','getFile',[
+            "localPath" => $localPath,
+            "remotePath" => $remotePath,
+        ]);
+    }
 }
 
 function openTunnel($remote_host, $remote_port, $username, $password)
 {
-    return limanInternalRequest('openTunnel',[
-        "remote_host" => $remote_host,
-        "remote_port" => $remote_port,
-        "username" => $username,
-        "password" => $password
-    ]);
+    if (server()->os == "windows") {
+        return limanInternalRequest('openTunnel',[
+            "remote_host" => $remote_host,
+            "remote_port" => $remote_port,
+            "username" => $username,
+            "password" => $password
+        ]);
+    }else{
+        return renderEngineRequest('','openTunnel',[
+            "remote_host" => $remote_host,
+            "remote_port" => $remote_port,
+            "username" => $username,
+            "password" => $password
+        ]);
+    }
+    
 }
 
 function stopTunnel($remote_host, $remote_port)
