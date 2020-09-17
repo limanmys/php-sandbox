@@ -282,17 +282,10 @@ function runScript($name,$parameters = "",$sudo = true)
 
 function putFile($localPath, $remotePath)
 {
-    if (server()->os == "windows") {
-        return limanInternalRequest('putFileApi',[
-            "localPath" => $localPath,
-            "remotePath" => $remotePath,
-        ]);
-    }else{
-        return renderEngineRequest('','putFile',[
-            "localPath" => $localPath,
-            "remotePath" => $remotePath,
-        ]);
-    }
+    return renderEngineRequest('','putFile',[
+        "localPath" => $localPath,
+        "remotePath" => $remotePath,
+    ]);
 }
 
 function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command)
@@ -320,17 +313,10 @@ function sudo()
 
 function getFile($localPath, $remotePath)
 {
-    if (server()->os == "windows") {
-        return limanInternalRequest('getFileApi',[
-            "localPath" => $localPath,
-            "remotePath" => $remotePath,
-        ]);
-    }else{
-        return renderEngineRequest('','getFile',[
-            "localPath" => $localPath,
-            "remotePath" => $remotePath,
-        ]);
-    }
+    return renderEngineRequest('','getFile',[
+        "localPath" => $localPath,
+        "remotePath" => $remotePath,
+    ]);
 }
 
 function openTunnel($remote_host, $remote_port, $username, $password)
@@ -353,12 +339,10 @@ function openTunnel($remote_host, $remote_port, $username, $password)
     
 }
 
+// @deprecated
 function stopTunnel($remote_host, $remote_port)
 {
-    return limanInternalRequest('stopTunnel',[
-        "remote_host" => $remote_host,
-        "remote_port" => $remote_port
-    ]);
+    return true;
 }
 
 function getPath($filename = null)
