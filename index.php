@@ -220,19 +220,19 @@ function dispatchJob($function_name,$parameters = [])
 function renderEngineRequest($function,$url,$parameters = [], $server_id = null, $extension_id = null)
 {
     global $limanData;
-    $client = new Client();
+    $client = new Client(['verify' => false ]);
     $parameters["server_id"] = $server_id ? $server_id : server()->id;
     $parameters["extension_id"] = $extension_id ? $extension_id : $limanData["extension"]["id"];
     $parameters["token"] = $limanData["token"];
     $parameters["lmntargetFunction"] = $function;
 
     try {
-        $response = $client->request('POST', "http://127.0.0.1:5454/$url", [
+        $response = $client->request('POST', "https://127.0.0.1:5454/$url", [
             "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        return $exception->getResponse()->getBody()->getContents();
+        return $exception->getMessage();
     }
 }
 
