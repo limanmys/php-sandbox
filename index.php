@@ -204,12 +204,10 @@ function limanInternalRequest($url,$data, $server_id = null,$extension_id = null
     }
 }
 
+// @deprecated
 function requestReverseProxy($hostname,$port)
 {
-    return limanInternalRequest('reverseProxyRequest',[
-        "hostname" => $hostname,
-        "port" => $port
-    ]); 
+    return null;
 }
 
 function dispatchJob($function_name,$parameters = [])
@@ -260,15 +258,9 @@ function getLicense() {
 
 function runCommand($command)
 {
-    if (server()->os == "windows") {
-        return limanInternalRequest('runCommandApi',[
-            "command" => $command
-        ]);
-    }else{
-        return renderEngineRequest('','runCommand',[
-            "command" => $command
-        ]);
-    }
+    return renderEngineRequest('','runCommand',[
+        "command" => $command
+    ]);
 }
 
 function runScript($name,$parameters = "",$sudo = true)
@@ -322,12 +314,7 @@ function getFile($localPath, $remotePath)
 function openTunnel($remote_host, $remote_port, $username, $password)
 {
     if (server()->os == "windows") {
-        return limanInternalRequest('openTunnel',[
-            "remote_host" => $remote_host,
-            "remote_port" => $remote_port,
-            "username" => $username,
-            "password" => $password
-        ]);
+        return false;
     }else{
         return renderEngineRequest('','openTunnel',[
             "remote_host" => $remote_host,
@@ -336,7 +323,6 @@ function openTunnel($remote_host, $remote_port, $username, $password)
             "password" => $password
         ]);
     }
-    
 }
 
 // @deprecated
@@ -375,10 +361,10 @@ function sendLog($title,$message)
         abort("Mesaj boş olamaz!",504);
     }
     global $limanData;
-    return limanInternalRequest('sendLog',[
+    return renderEngineRequest('','sendLog',[
         "log_id" => $limanData["log_id"],
-        "message" => $message,
-        "title" => $title
+        'message' => base64_encode($message),
+        'title' => base64_encode($title),
     ]);
 }
 
