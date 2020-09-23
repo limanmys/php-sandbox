@@ -293,13 +293,28 @@ function executeOutsideCommand($connectionType, $username,$password,$remote_host
 }
 
 
+function getServerKeyType()
+{
+    global $limanData;
+    return $limanData["key_type"];
+}
+
+function serverHasKey()
+{
+    global $limanData;
+    return $limanData["key_type"] != "";
+}
+
 function sudo()
 {
-    if(server()->type == "linux_certificate"){
+    global $limanData;
+    if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
+    } else if ($limanData["key_type"] == "ssh"){
+        $pass64 = base64_encode(extensionDb("clientPassword")."\n");
+        return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
     }
-    $pass64 = base64_encode(extensionDb("clientPassword")."\n");
-    return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
+    return "";
 }
 
 
@@ -323,6 +338,15 @@ function openTunnel($remote_host, $remote_port, $username, $password)
             "password" => $password
         ]);
     }
+}
+
+function keepTunnelAlive($remote_host,$remote_port,$username)
+{
+    return renderEngineRequest('','openTunnel',[
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port,
+        "username" => $username
+    ]);
 }
 
 // @deprecated
