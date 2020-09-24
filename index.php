@@ -268,7 +268,7 @@ function runScript($name,$parameters = " ",$sudo = true)
     return renderEngineRequest('','runScript',[
         "local_path" => getPath("scripts/$name"),
         "root" => $sudo ? "yes" : "no",
-        "parameters" => $parameters
+        "parameters" => trim($parameters) ? $parameters : " "
     ]);
 }
 
