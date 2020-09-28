@@ -36,17 +36,18 @@
                 @endif
                 <td style="width: 10px" class="row-number">{{$loop->iteration + $startingNumber}}</td>
                 @foreach($display as $item)
-                    @if(count(explode(':',$item)) > 1)
+                    @php($fetch=explode(':',$item))
+                    @if(count($fetch) > 1)
                         @if(is_array($k))
-                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k[explode(':',$item)[0]]}}</td>
+                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k[$fetch[0]]}}</td>
                         @else
-                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k->__get(explode(':',$item)[0])}}</td>
+                            <td id="{{explode(':',$item)[1]}}" hidden>{{$k->$fetch[0]}}</td>
                         @endif
                     @else
                         @if(is_array($k))
                             <td id="{{$item}}">{{$k[$item]}}</td>
                         @else
-                            <td id="{{$item}}">{{$k->__get($item)}}</td>
+                            <td id="{{$item}}">{{$k->$item}}</td>
                         @endif
                     @endif
                 @endforeach
