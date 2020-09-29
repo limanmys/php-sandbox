@@ -110,7 +110,7 @@
                 },
                 items: {
                     @foreach($menu as $name=>$config)
-                        "{{$config['target']}}" : {name: "{{$name}}" , icon: "{{$config['icon']}}"},
+                        "{{$config['target']}}" : {name: "{{__($name)}}" , icon: "{{$config['icon']}}"},
                     @endforeach
                 }
             });
