@@ -204,10 +204,12 @@ function limanInternalRequest($url,$data, $server_id = null,$extension_id = null
     }
 }
 
-// @deprecated
 function requestReverseProxy($hostname,$port)
 {
-    return null;
+    return limanInternalRequest('reverseProxyRequest',[
+        "hostname" => $hostname,
+        "port" => $port
+    ]); 
 }
 
 function dispatchJob($function_name,$parameters = [])
