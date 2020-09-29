@@ -232,7 +232,7 @@ function renderEngineRequest($function,$url,$parameters = [], $server_id = null,
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        return $exception->getMessage();
+        abort($exception->getMessage(), 201);
     }
 }
 
