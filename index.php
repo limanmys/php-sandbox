@@ -69,18 +69,26 @@ function user()
     return (object) $limanData["user"];
 }
 
+$cachedLMNTranslations = [];
+
 function __($str)
 {
-    global $limanData;
-    $folder = dirname(dirname($limanData["functionsPath"])) . "/lang";
-    $file = $folder . "/" . $limanData["locale"] . ".json";
-    if (!is_dir($folder) || !is_file($file)) {
+    global $limanData, $cachedLMNTranslations;
+    if ($cachedLMNTranslations === null){
         return $str;
-    }
+    } 
 
-    // Read JSON
-    $json = json_decode(file_get_contents($file), true);
-    return (array_key_exists($str, $json)) ? $json[$str] : $str;
+    if ($cachedLMNTranslations == []){
+        $folder = dirname(dirname($limanData["functionsPath"])) . "/lang";
+        $file = $folder . "/" . $limanData["locale"] . ".json";
+        $cachedLMNTranslations = null;
+        if (!is_dir($folder) || !is_file($file)) {
+            return $str;
+        }
+        $cachedLMNTranslations = json_decode(file_get_contents($file), true);
+    }
+    
+    return (array_key_exists($str, $cachedLMNTranslations)) ? $cachedLMNTranslations[$str] : $str;
 }
 
 function request($target = null)
