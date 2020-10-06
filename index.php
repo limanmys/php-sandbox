@@ -228,19 +228,19 @@ function dispatchJob($function_name,$parameters = [])
 function renderEngineRequest($function,$url,$parameters = [], $server_id = null, $extension_id = null)
 {
     global $limanData;
-    $client = new Client();
+    $client = new Client(['verify' => false ]);
     $parameters["server_id"] = $server_id ? $server_id : server()->id;
     $parameters["extension_id"] = $extension_id ? $extension_id : $limanData["extension"]["id"];
     $parameters["token"] = $limanData["token"];
     $parameters["lmntargetFunction"] = $function;
 
     try {
-        $response = $client->request('POST', "http://127.0.0.1:5454/$url", [
+        $response = $client->request('POST', "https://127.0.0.1:5454/$url", [
             "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
     } catch (GuzzleException $exception) {
-        return $exception->getResponse()->getBody()->getContents();
+        abort($exception->getMessage(), 201);
     }
 }
 
@@ -268,62 +268,101 @@ function getLicense() {
 
 function runCommand($command)
 {
-    return limanInternalRequest('runCommandApi',[
+    return renderEngineRequest('','runCommand',[
         "command" => $command
     ]);
 }
 
-function runScript($name,$parameters = "",$sudo = true)
+function runScript($name,$parameters = " ",$sudo = true)
 {
-    return limanInternalRequest('runScriptApi',[
-        "scriptName" => $name,
-        "runAsRoot" => $sudo ? "yes" : "no",
-        "parameters" => $parameters
+    return renderEngineRequest('','runScript',[
+        "local_path" => getPath("scripts/$name"),
+        "root" => $sudo ? "yes" : "no",
+        "parameters" => trim($parameters) ? $parameters : " "
     ]);
 }
 
 function putFile($localPath, $remotePath)
 {
-    return limanInternalRequest('putFileApi',[
-        "localPath" => $localPath,
-        "remotePath" => $remotePath,
+    return renderEngineRequest('','putFile',[
+        "local_path" => $localPath,
+        "remote_path" => $remotePath,
     ]);
+}
+
+function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command)
+{
+    return renderEngineRequest('','runOutsideCommand',[
+        "connection_type" => $connectionType,
+        "username" => $username,
+        "password" => $password,
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port,
+        "command" => $command
+    ]);
+}
+
+
+function getServerKeyType()
+{
+    global $limanData;
+    return $limanData["key_type"];
+}
+
+function serverHasKey()
+{
+    global $limanData;
+    return $limanData["key_type"] != "";
 }
 
 function sudo()
 {
-    if(server()->type == "linux_certificate"){
+    global $limanData;
+    if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
+    } else if ($limanData["key_type"] == "ssh"){
+        $pass64 = base64_encode(extensionDb("clientPassword")."\n");
+        return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
     }
-    $pass64 = base64_encode(extensionDb("clientPassword")."\n");
-    return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
+    return "";
 }
 
 
 function getFile($localPath, $remotePath)
 {
-    return limanInternalRequest('getFileApi',[
-        "localPath" => $localPath,
-        "remotePath" => $remotePath,
+    return renderEngineRequest('','getFile',[
+        "local_path" => $localPath,
+        "remote_path" => $remotePath,
     ]);
 }
 
 function openTunnel($remote_host, $remote_port, $username, $password)
 {
-    return limanInternalRequest('openTunnel',[
+    if (server()->os == "windows") {
+        return false;
+    }else{
+        return renderEngineRequest('','openTunnel',[
+            "remote_host" => $remote_host,
+            "remote_port" => $remote_port,
+            "username" => $username,
+            "password" => $password
+        ]);
+    }
+}
+
+function keepTunnelAlive($remote_host,$remote_port,$username)
+{
+    return renderEngineRequest('','openTunnel',[
         "remote_host" => $remote_host,
         "remote_port" => $remote_port,
-        "username" => $username,
-        "password" => $password
+        "username" => $username
     ]);
 }
 
+// @deprecated
 function stopTunnel($remote_host, $remote_port)
 {
-    return limanInternalRequest('stopTunnel',[
-        "remote_host" => $remote_host,
-        "remote_port" => $remote_port
-    ]);
+    return true;
 }
 
 function getPath($filename = null)
@@ -356,10 +395,10 @@ function sendLog($title,$message)
         abort("Mesaj boş olamaz!",504);
     }
     global $limanData;
-    return limanInternalRequest('sendLog',[
+    return renderEngineRequest('','sendLog',[
         "log_id" => $limanData["log_id"],
-        "message" => $message,
-        "title" => $title
+        'message' => base64_encode($message),
+        'title' => base64_encode($title),
     ]);
 }
 
