@@ -338,16 +338,12 @@ function getFile($localPath, $remotePath)
 
 function openTunnel($remote_host, $remote_port, $username, $password)
 {
-    if (server()->os == "windows") {
-        return false;
-    }else{
-        return renderEngineRequest('','openTunnel',[
-            "remote_host" => $remote_host,
-            "remote_port" => $remote_port,
-            "username" => $username,
-            "password" => $password
-        ]);
-    }
+    return renderEngineRequest('','openTunnel',[
+        "remote_host" => $remote_host,
+        "remote_port" => $remote_port,
+        "username" => $username,
+        "password" => $password
+    ]);
 }
 
 function keepTunnelAlive($remote_host,$remote_port,$username)
