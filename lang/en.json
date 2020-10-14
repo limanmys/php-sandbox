@@ -1,0 +1,18 @@
+{
+    "Kalan Zaman": "Remaining Time",
+	"Gün Kaldı": "Days Left",
+	"Sınırsız": "Endless",
+	"Lisans Bilgileri": "License Information",
+	"Sahibi": "Owner",
+	"Bitiş Tarihi": "End Date",
+	"Geçerli Eklentiler": "Valid Extensions",
+	"Tümü": "All",
+	"İzin Verilen Fonksiyonlar": "Allowed Functions",
+	"Kapat": "Close",
+	"Geçersiz lisans! Lütfen lisansınızı kontrol edin.": "Invalid license! Please check your license.",
+	"Lütfen lisans anahtarınızı giriniz!": "Please enter your license key!",
+	"Lisansınız bu eklenti için geçerli değil!": "Your license is not valid for this extension!",
+	"Lisansınız bu makine için geçerli değil!": "Your license is not valid for this machine!",
+	"Lisansınızın süresi doldu!": "Your license has expired!",
+	"Mevcut lisansınız ile bu özelliği kullanamazsınız!": "You cannot use this feature with your current license!",
+}

@@ -2,14 +2,14 @@
 ob_start();
 require_once(__DIR__ . "/vendor/autoload.php");
 
-function customErrorHandler($exception, $err_str=null, $error_file=null, $error_line=null) {
+function customErrorHandler($exception, $err_str=null) {
     if($err_str){
-        if($exception==8){
+        if($exception == 8){
             return;
         }
-        $message=$err_str." File: ".$error_file." Line: ".$error_line;
+        $message = __($err_str);
     }else{
-        $message=$exception->getMessage();
+        $message = __($exception->getMessage());
     }
     abort($message, 201);
 }
@@ -79,13 +79,23 @@ function __($str)
     } 
 
     if ($cachedLMNTranslations == []){
-        $folder = dirname(dirname($limanData["functionsPath"])) . "/lang";
-        $file = $folder . "/" . $limanData["locale"] . ".json";
-        $cachedLMNTranslations = null;
-        if (!is_dir($folder) || !is_file($file)) {
-            return $str;
+        $translationFiles = [
+            [
+                "folder" => dirname(dirname($limanData["functionsPath"])) . "/lang",
+            ],
+            [
+                "folder" => __DIR__ . "/lang",
+            ]
+        ];
+        foreach ($translationFiles as $translationFile){
+            $file = $translationFile['folder'] . "/" . $limanData["locale"] . ".json";
+            if (is_dir($translationFile['folder']) && is_file($file)) {
+                $cachedLMNTranslations = array_merge(
+                    $cachedLMNTranslations,
+                    json_decode(file_get_contents($file), true)
+                );
+            }
         }
-        $cachedLMNTranslations = json_decode(file_get_contents($file), true);
     }
     
     return (array_key_exists($str, $cachedLMNTranslations)) ? $cachedLMNTranslations[$str] : $str;

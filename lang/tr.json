@@ -1,0 +1,6 @@
+{
+    "ldap_add(): Add: Constraint violation": "Girdiğiniz veriler LDAP kısıtlamalarına uymuyor.",
+    "ldap_add(): Add: Server is unwilling to perform": "LDAP girdiğiniz verileri işleyemiyor.",
+    "ldap_add(): Add: Already exists": "Bu nesne LDAP'a zaten eklenmiş.",
+    "ldap_add(): Add: Invalid syntax": "LDAP sorgusunda geçersiz sözdizimi."
+}
