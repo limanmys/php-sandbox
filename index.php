@@ -358,7 +358,7 @@ function openTunnel($remote_host, $remote_port, $username, $password)
 
 function keepTunnelAlive($remote_host,$remote_port,$username)
 {
-    return renderEngineRequest('','openTunnel',[
+    return renderEngineRequest('','keepTunnelAlive',[
         "remote_host" => $remote_host,
         "remote_port" => $remote_port,
         "username" => $username
