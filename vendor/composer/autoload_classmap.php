@@ -6,4 +6,23 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+    'Liman\\Toolkit\\Formatter' => $vendorDir . '/limanmys/toolkit/src/Formatter.php',
+    'Liman\\Toolkit\\OS\\Distro' => $vendorDir . '/limanmys/toolkit/src/OS/Distro.php',
+    'Liman\\Toolkit\\OS\\DistroInfo' => $vendorDir . '/limanmys/toolkit/src/OS/DistroInfo.php',
+    'Liman\\Toolkit\\RemoteTask\\Task' => $vendorDir . '/limanmys/toolkit/src/RemoteTask/Task.php',
+    'Liman\\Toolkit\\RemoteTask\\TaskCheckStatus' => $vendorDir . '/limanmys/toolkit/src/RemoteTask/TaskCheckStatus.php',
+    'Liman\\Toolkit\\RemoteTask\\TaskCheckStatusEnum' => $vendorDir . '/limanmys/toolkit/src/RemoteTask/TaskCheckStatusEnum.php',
+    'Liman\\Toolkit\\RemoteTask\\TaskManager' => $vendorDir . '/limanmys/toolkit/src/RemoteTask/TaskManager.php',
+    'Liman\\Toolkit\\RemoteTask\\TaskRunStatus' => $vendorDir . '/limanmys/toolkit/src/RemoteTask/TaskRunStatus.php',
+    'Liman\\Toolkit\\RemoteTask\\TaskRunStatusEnum' => $vendorDir . '/limanmys/toolkit/src/RemoteTask/TaskRunStatusEnum.php',
+    'Liman\\Toolkit\\Shell\\Command' => $vendorDir . '/limanmys/toolkit/src/Shell/Command.php',
+    'Liman\\Toolkit\\Shell\\CommandEngine' => $vendorDir . '/limanmys/toolkit/src/Shell/CommandEngine.php',
+    'Liman\\Toolkit\\Shell\\ICommandEngine' => $vendorDir . '/limanmys/toolkit/src/Shell/ICommandEngine.php',
+    'Liman\\Toolkit\\Shell\\SSHEngine' => $vendorDir . '/limanmys/toolkit/src/Shell/SSHEngine.php',
+    'Liman\\Toolkit\\Validator' => $vendorDir . '/limanmys/toolkit/src/Validator.php',
+    'Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
+    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+    'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
 );

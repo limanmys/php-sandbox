@@ -1,21 +1,28 @@
-mPDF 8.1.x
+mPDF 8.0.x
 ===========================
 
+* Ability to customize User-Agent header in the HTTP requests sent by cURL (@samuelecat, #1229)
+* Add Page Number Myanmar Language Support (@MinKyawNyunt, #1201)
+* new `Mpdf\Exception\FontException` extending base `MpdfException` was introduced and is thrown on Font manipulation
+* A bit cleaner exception messages for font-related errors
+* Use atomic cache writing. (@PATROMO, #1186)
+* Fix: "Undefined index: group" when calling MultiCell when using font without OTL data (@Kekos, #1213, #941)
+* Add C128RAW barcode type to create any barcode (ex: subtype change in middle of barcode) (#1124)
 * Add proxy support to curl
 * Fixed date and time format in the informations dictionary (#1083, @peterdevpl)
 * Checking allowed stream wrappers in CssManager
 * PHP 7.4 support (until final 7.4 release with composer --ignore-platform-reqs)
 * Improve debugging of remote content issues (@ribeirobreno)
-
-mPDF 8.0.x
-===========================
-
+* Added `exposeVersion` configuration variable allowing to hide mPDF version from Producer tag and HTTP headers
 * Added the check for JPEG SOF header 0xFF 0xC1 (extended) (@jamiejones85)
 * Allows setting `none` as zoom mode in `SetDisplayMode` method, so that OpenAction is not written (#602)
 * Allowed image stream whitelist to be customised (#1005, thanks @jakejackson)
 * Fixed parsing of top-left-bottom-right CSS rules with !important (#1009)
 * Fixed skipping ordered list numbering with page-break-inside: avoid (#339)
 * Compound classes selector support, like `.one.two` or `div.message.special` (#538, @peterdevpl)
+* Fixed CMYK colors in text-shadow (#1115, @lexilya)
+* Skip non supported wrappers when resolving paths (#1204, @MarkVaughn)
+* Fixed SVGs using a style tag, has styles ignored ( Requires ext-dom ) (#450, @antman3351)
 
 mPDF 8.0.0
 ===========================

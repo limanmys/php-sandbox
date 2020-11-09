@@ -1,0 +1,29 @@
+{
+    "name": "limanmys/toolkit",
+    "description": "Toolkit is a library that provides various helpers and classes to make the development of liman extensions easier.",
+    "type": "library",
+    "authors": [
+		{
+			"name": "Baran Sekin",
+			"email": "bsekin@havelsan.com.tr"
+		}
+	],
+    "license": "MIT",
+    "require": {
+        "illuminate/validation": "^8.0",
+		"illuminate/translation": "^8.0",
+		"illuminate/filesystem": "^8.0",
+		"vlucas/phpdotenv": "^5.1"
+    },
+    "autoload": {
+		"files": [
+			"src/Helpers.php"
+		],
+		"psr-4": {
+			"Liman\\Toolkit\\": "src"
+		},
+		"classmap": [
+			"src"
+		]
+	}
+}
