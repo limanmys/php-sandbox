@@ -412,7 +412,27 @@ if (is_file($limanData["functionsPath"])) {
     include($limanData["functionsPath"]);
 }
 
-if(!function_exists($limanData["function"])){
+if (is_file(getPath('vendor/autoload.php'))) {
+    require_once getPath('vendor/autoload.php');
+    if(class_exists('App\\App') && method_exists('App\\App', 'init')){
+        (new App\App())->init();
+    }
+}
+
+if(function_exists($limanData["function"])){
+    echo call_user_func($limanData["function"]);
+}else if(is_file(getPath("routes.php"))){
+    $routes = include getPath('routes.php');
+    if(isset($routes[$limanData["function"]])){
+        $destination = explode('@', $routes[$limanData["function"]]);
+        $class = 'App\\Controllers\\' . $destination[0];
+        if (!class_exists($class)) {
+			$class = $destination[0];
+        }
+        echo (new $class())->{$destination[1]}();
+    }else{
+        abort("İstediğiniz sayfa bulunamadı",504);
+    }
+}else{
     abort("İstediğiniz sayfa bulunamadı",504);
 }
-echo call_user_func($limanData["function"]);
