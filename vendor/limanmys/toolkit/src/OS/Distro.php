@@ -151,7 +151,7 @@ class Distro
 	 */
 	public static function __callStatic($method, $parameters)
 	{
-		if (self::$instance !== null) {
+		if (self::$instance == null) {
 			self::$instance = new self();
 		}
 		return self::$instance->$method(...$parameters);
