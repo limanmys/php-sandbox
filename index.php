@@ -397,10 +397,14 @@ function sendNotification($title,$message, $type = "notify")
 
 function sendLog($title,$message)
 {
+    global $limanData;
     if($message == null){
         abort("Mesaj boş olamaz!",504);
     }
-    global $limanData;
+    if($title == "MAIL_TAG"){
+        $message = $limanData["extension"]["id"] . "-" . server()->id . "-" . $message;
+    }
+
     return renderEngineRequest('','sendLog',[
         "log_id" => $limanData["log_id"],
         'message' => base64_encode($message),
