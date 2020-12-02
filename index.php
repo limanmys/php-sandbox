@@ -20,6 +20,8 @@ set_error_handler('customErrorHandler');
 use Jenssegers\Blade\Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use mervick\aesEverywhere\AES256;
 
 $decrypted = AES256::decrypt($argv[2], shell_exec('cat ' . $argv[1]));
@@ -71,7 +73,7 @@ function user()
 
 $cachedLMNTranslations = [];
 
-function __($str)
+function __($str, $attributes = [])
 {
     global $limanData, $cachedLMNTranslations;
     if ($cachedLMNTranslations === null){
@@ -98,7 +100,33 @@ function __($str)
         }
     }
     
-    return (array_key_exists($str, $cachedLMNTranslations)) ? $cachedLMNTranslations[$str] : $str;
+    return makeReplacements((array_key_exists($str, $cachedLMNTranslations)) ? $cachedLMNTranslations[$str] : $str, $attributes);
+}
+
+function makeReplacements($line, array $replace)
+{
+    if (empty($replace)) {
+        return $line;
+    }
+
+    $replace = sortReplacements($replace);
+
+    foreach ($replace as $key => $value) {
+        $line = str_replace(
+            [':'.$key, ':'.Str::upper($key), ':'.Str::ucfirst($key)],
+            [$value, Str::upper($value), Str::ucfirst($value)],
+            $line
+        );
+    }
+
+    return $line;
+}
+
+function sortReplacements(array $replace)
+{
+    return (new Collection($replace))->sortBy(function ($value, $key) {
+        return mb_strlen($key) * -1;
+    })->all();
 }
 
 function request($target = null)
