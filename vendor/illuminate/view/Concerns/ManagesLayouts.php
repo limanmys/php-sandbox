@@ -2,8 +2,8 @@
 
 namespace Illuminate\View\Concerns;
 
-use InvalidArgumentException;
 use Illuminate\Contracts\View\View;
+use InvalidArgumentException;
 
 trait ManagesLayouts
 {
@@ -183,6 +183,17 @@ trait ManagesLayouts
     public function hasSection($name)
     {
         return array_key_exists($name, $this->sections);
+    }
+
+    /**
+     * Check if section does not exist.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function sectionMissing($name)
+    {
+        return ! $this->hasSection($name);
     }
 
     /**

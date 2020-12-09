@@ -1,11 +1,12 @@
 {
-  "name": "Liman Sandbox app",
+  "name": "limanmys/php-sandbox",
   "description": "",
   "homepage": "https://liman.dev",
   "version": "1.0",
   "type": "project",
   "require": {
-    "jenssegers/blade": "^1.1.0.0",
+    "limanmys/toolkit": "^1.0",
+    "jenssegers/blade": "^1.4",
     "larapack/dd": "^1.1",
     "phpseclib/phpseclib": "~2.0",
     "guzzlehttp/guzzle": "^6.3",
@@ -16,6 +17,7 @@
     "mongodb/mongodb": "^1.4",
     "mpdf/mpdf": "^8.0",
     "ext-ldap": "*",
-    "mervick/aes-everywhere": "^1.1"
+    "mervick/aes-everywhere": "^1.1",
+    "laravel/helpers": "^1.4"
   }
 }

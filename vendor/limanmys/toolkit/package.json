@@ -1,0 +1,38 @@
+{
+	"name": "@limanmys/toolkit",
+	"description": "",
+	"scripts": {
+		"prettier": "prettier",
+		"pre-commit": "lint-staged",
+		"format": "prettier --write ./src"
+	},
+	"prettier": {
+		"phpVersion": "7.3",
+		"singleQuote": true,
+		"useTabs": true,
+		"trailingCommaPHP": false
+	},
+	"pre-commit": [
+		"pre-commit"
+	],
+	"lint-staged": {
+		"{src}/**/*.php": [
+			"prettier --write",
+			"git add"
+		]
+	},
+	"devDependencies": {
+		"@prettier/plugin-php": "^0.14.3",
+		"lint-staged": "^10.3.0",
+		"pre-commit": "^1.2.2",
+		"prettier": "^2.1.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/limanmys/toolkit.git"
+	},
+	"bugs": {
+		"url": "https://github.com/limanmys/toolkit/issues"
+	},
+	"homepage": "https://github.com/limanmys/toolkit#readme"
+}

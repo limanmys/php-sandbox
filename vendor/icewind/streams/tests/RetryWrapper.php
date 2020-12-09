@@ -7,61 +7,7 @@
 
 namespace Icewind\Streams\Tests;
 
-class PartialWrapper extends \Icewind\Streams\NullWrapper {
-	/**
-	 * Wraps a stream with the provided callbacks
-	 *
-	 * @param resource $source
-	 * @return resource
-	 *
-	 * @throws \BadMethodCallException
-	 */
-	public static function wrap($source) {
-		$context = stream_context_create(array(
-			'null' => array(
-				'source' => $source)
-		));
-		return self::wrapSource($source, $context, 'partial', '\Icewind\Streams\Tests\PartialWrapper');
-	}
-
-	public function stream_read($count) {
-		$count = min($count, 2); // return as most 2 bytes
-		return parent::stream_read($count);
-	}
-
-	public function stream_write($data) {
-		$data = substr($data, 0, 2); //write as most 2 bytes
-		return parent::stream_write($data);
-	}
-}
-
-class FailWrapper extends \Icewind\Streams\NullWrapper {
-	/**
-	 * Wraps a stream with the provided callbacks
-	 *
-	 * @param resource $source
-	 * @return resource
-	 *
-	 * @throws \BadMethodCallException
-	 */
-	public static function wrap($source) {
-		$context = stream_context_create(array(
-			'null' => array(
-				'source' => $source)
-		));
-		return self::wrapSource($source, $context, 'fail', '\Icewind\Streams\Tests\FailWrapper');
-	}
-
-	public function stream_read($count) {
-		return false;
-	}
-
-	public function stream_write($data) {
-		return false;
-	}
-}
-
-class RetryWrapperTest extends WrapperTest {
+class RetryWrapper extends WrapperTest {
 
 	/**
 	 * @param resource $source

@@ -7,34 +7,6 @@
 
 namespace Icewind\Streams\Tests;
 
-class DirectoryWrapperNull extends \Icewind\Streams\DirectoryWrapper {
-	public static function wrap($source) {
-		$options = array(
-			'dir' => array(
-				'source' => $source)
-		);
-		return self::wrapWithOptions($options, '\Icewind\Streams\Tests\DirectoryWrapperNull');
-	}
-}
-
-class DirectoryWrapperDummy extends \Icewind\Streams\DirectoryWrapper {
-	public static function wrap($source) {
-		$options = array(
-			'dir' => array(
-				'source' => $source)
-		);
-		return self::wrapWithOptions($options, '\Icewind\Streams\Tests\DirectoryWrapperDummy');
-	}
-
-	public function dir_readdir() {
-		$file = parent::dir_readdir();
-		if ($file !== false) {
-			$file .= '_';
-		}
-		return $file;
-	}
-}
-
 class DirectoryWrapper extends IteratorDirectory {
 
 	/**

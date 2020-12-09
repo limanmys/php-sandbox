@@ -10,7 +10,7 @@ namespace Icewind\SMB\Test;
 use Icewind\SMB\IFileInfo;
 use Icewind\SMB\Wrapped\FileInfo;
 
-class ParserTest extends \PHPUnit_Framework_TestCase {
+class ParserTest extends \PHPUnit\Framework\TestCase {
 	public function modeProvider() {
 		return [
 			['D', IFileInfo::MODE_DIRECTORY],
@@ -23,6 +23,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
 			['RAH', IFileInfo::MODE_READONLY | IFileInfo::MODE_ARCHIVE | IFileInfo::MODE_HIDDEN]
 		];
 	}
+
 	/**
 	 * @dataProvider modeProvider
 	 */
@@ -108,7 +109,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
 						'c.pdf',
 						29634,
 						strtotime('12 Oct 2013 19:05:58 CEST'),
-						IFileInfo::MODE_NORMAL
+						IFileInfo::MODE_NORMAL,
+						function () {
+							return [];
+						}
 					)
 				]
 			]
@@ -120,6 +124,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testDir($output, $dir) {
 		$parser = new \Icewind\SMB\Wrapped\Parser('CEST');
-		$this->assertEquals($dir, $parser->parseDir($output, ''));
+		$this->assertEquals($dir, $parser->parseDir($output, '', function () {
+			return [];
+		}));
 	}
 }

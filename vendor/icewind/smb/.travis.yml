@@ -1,12 +1,11 @@
-dist: trusty
+dist: bionic
 sudo: required
 language: php
 php:
-  - 5.6
-  - 7.0
   - 7.1
   - 7.2
   - 7.3
+  - 7.4
 
 addons:
   apt:
@@ -47,7 +46,7 @@ before_install:
   - testparm -s
 
 install:
-  - composer install --dev --no-interaction
+  - composer install --no-interaction
 
 script:
   - vendor/bin/phpunit --coverage-clover clover.xml -c tests/phpunit.xml
