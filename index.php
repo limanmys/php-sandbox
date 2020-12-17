@@ -405,6 +405,16 @@ function getPath($filename = null)
     return dirname(dirname($limanData["functionsPath"])) . "/" . $filename;
 }
 
+function getVariable($key)
+{
+    global $limanData;
+    if(array_key_exists("variables",$limanData)){
+        return $limanData["variables"][$key];
+    }else{
+        return null;
+    }
+}
+
 function can($name)
 {
     global $limanData;
