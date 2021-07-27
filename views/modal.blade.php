@@ -1,6 +1,6 @@
 @php($id = isset($id) ? $id : bin2hex(random_bytes(10)))
 <div class="modal fade" id="{{$id}}">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-dialog-centered @if(!isset($notSized) || !$notSized) modal-xl @endif {{ isset($modalDialogClasses) ? $modalDialogClasses : ''}}">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
@@ -12,11 +12,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @php($rand = bin2hex(random_bytes(10)))
             @isset($onsubmit)
-                <form @isset($id)id="{{$id}}_form"@endisset onsubmit="return {{$onsubmit}}(this)" target="#">
+                <form id="{{$id}}_form" onsubmit="return {{$onsubmit}}(this)" target="#">
             @else
-                <form @isset($id)id="{{$id}}_form"@endisset onsubmit="return @isset($url)request('{{$url}}',this,@isset($next){{$next}}@endisset)"@endisset target="#">
+                <form id="{{$id}}_form" onsubmit="return @isset($url)request('{{$url}}',this,@isset($next){{$next}}@endisset,@isset($error){{$error}}@endisset)"@endisset target="#">
             @endif
                 <div class="modal-body">
                     <div id="{{$id}}_alert" class="alert" role="alert" hidden></div>
@@ -51,6 +50,7 @@
                         <br>
                     @endisset
                 </div>
+                @isset($submit_text)
                 <div class="modal-footer justify-content-right">
                     @isset($noEnter)
                         <button type="button" class="btn btn-success">@isset($submit_text){{__($submit_text)}}@endisset</button>
@@ -58,6 +58,7 @@
                         <button type="submit" class="btn btn-success">@isset($submit_text){{__($submit_text)}}@endisset</button>
                     @endisset
                 </div>
+                @endisset
             </form>
         </div>
     </div>
