@@ -1,12 +1,12 @@
-
-@php($rand = str_random(3))
 <?php
+    $rand = str_random(3);
     if(extensionDb("server_type") == "Active Directory" || extensionDb("server_type") == "Samba"){
         $data = $data["windows"];
     }else{
         $data = $data["linux"];
     }
 ?>
+
 @isset($open)
     <div class="box box-default box-solid">
         @else
@@ -15,7 +15,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">{{$title}}</h3>
                     <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                        <button data-toggle="tooltip" title="Ekle" type="button" class="btn btn-box-tool" data-widget="collapse"><i data-toggle="tooltip" title="Ekle" class="fa fa-plus"></i>
                         </button>
                     </div>
                 </div>

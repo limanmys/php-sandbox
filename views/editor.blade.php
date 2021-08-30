@@ -5,7 +5,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{route('home')}}">{{__("Ana Sayfa")}}</a></li>
             <li class="breadcrumb-item"><a href="{{route('extensions_settings')}}">{{__("Eklenti Yönetimi")}}</a></li>
-            <li class="breadcrumb-item"><a href="{{route('extension_one',["extension_id" => extension()->_id])}}">{{ extension()->name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{route('extension_one',["extension_id" => extension()->_id])}}">{{ extension()->display_name }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ request('page_name') }}</li>
         </ol>
     </nav>
@@ -44,25 +44,17 @@
         }
 
         function save(){
-            Swal.fire({
-                position: 'center',
-                type: 'info',
-                title: '{{__("Kaydediliyor...")}}',
-                showConfirmButton: false,
-            });
-            let code = JSON.stringify(window.editor.getValue());
-            let data = new FormData();
+            showSwal('{{__("Kaydediliyor...")}}','info');
+            var code = JSON.stringify(window.editor.getValue());
+            var data = new FormData();
             data.append('code',code);
             data.append('page','{{request('page_name')}}');
             data.append('extension_id','{{extension()->_id}}');
             request('{{route('extension_code_update')}}',data,function(response){
-                Swal.fire({
-                    position: 'center',
-                    type: 'success',
-                    title: "{{__("Başarıyla kaydedildi")}}",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                showSwal("{{__("Başarıyla kaydedildi")}}",'success',2000);
+            }, function(response){
+                var error = JSON.parse(response);
+                showSwal(error.message,'error',2000);
             });
         }
     </script>

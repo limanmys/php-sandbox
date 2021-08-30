@@ -23,6 +23,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use mervick\aesEverywhere\AES256;
+use Liman\Toolkit\RemoteTask\TaskManager;
 
 $decrypted = AES256::decrypt($argv[2], shell_exec('cat ' . $argv[1]));
 
@@ -448,6 +449,20 @@ function sendLog($title,$message)
         'message' => base64_encode($message),
         'title' => base64_encode($title),
     ]);
+}
+
+function runTask()
+{
+    $taskName = request('name');
+    $attributes = (array) json_decode(request('attributes'));
+    return respond(TaskManager::get($taskName, $attributes)->run());
+}
+
+function checkTask()
+{
+    $taskName = request('name');
+    $attributes = (array) json_decode(request('attributes'));
+    return respond(TaskManager::get($taskName, $attributes)->check());
 }
 
 if (is_file($limanData["functionsPath"])) {
