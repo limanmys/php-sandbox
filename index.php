@@ -360,7 +360,7 @@ function sudo()
     if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
     } else if ($limanData["key_type"] == "ssh"){
-        return 'sudo ';
+        return 'sudo -p "liman-pass-sudo" ';
     }
     return "";
 }
