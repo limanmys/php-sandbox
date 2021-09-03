@@ -360,8 +360,7 @@ function sudo()
     if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
     } else if ($limanData["key_type"] == "ssh"){
-        $pass64 = base64_encode(extensionDb("clientPassword")."\n");
-        return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
+        return 'sudo ';
     }
     return "";
 }
