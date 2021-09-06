@@ -89,7 +89,19 @@ class RedisSessionHandler extends AbstractSessionHandler
      */
     protected function doDestroy(string $sessionId): bool
     {
-        $this->redis->del($this->prefix.$sessionId);
+        static $unlink = true;
+
+        if ($unlink) {
+            try {
+                $unlink = false !== $this->redis->unlink($this->prefix.$sessionId);
+            } catch (\Throwable $e) {
+                $unlink = false;
+            }
+        }
+
+        if (!$unlink) {
+            $this->redis->del($this->prefix.$sessionId);
+        }
 
         return true;
     }
@@ -104,10 +116,13 @@ class RedisSessionHandler extends AbstractSessionHandler
 
     /**
      * {@inheritdoc}
+     *
+     * @return int|false
      */
-    public function gc($maxlifetime): bool
+    #[\ReturnTypeWillChange]
+    public function gc($maxlifetime)
     {
-        return true;
+        return 0;
     }
 
     /**

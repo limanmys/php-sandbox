@@ -4,9 +4,9 @@
 		<directory suffix='.php'>./</directory>
 	</testsuite>
 
-	<filter>
-		<whitelist Stream="true">
+	<coverage>
+		<include>
 			<directory suffix=".php">../src</directory>
-		</whitelist>
-	</filter>
+		</include>
+	</coverage>
 </phpunit>
