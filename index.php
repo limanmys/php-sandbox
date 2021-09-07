@@ -308,7 +308,7 @@ function getLicense() {
 function runCommand($command)
 {
     return renderEngineRequest('','runCommand',[
-        "command" => $command
+        "command" => $command.((substr($command, -1)) !== ";" ? ";" : "")." echo 1 2>/dev/null 1>/dev/null;"
     ]);
 }
 
