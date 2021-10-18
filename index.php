@@ -434,7 +434,7 @@ function sendNotification($title,$message, $type = "notify")
     ]);
 }
 
-function sendLog($title,$message)
+function sendLog($title,$message,$data=[])
 {
     global $limanData;
     if($message == null){
@@ -448,6 +448,7 @@ function sendLog($title,$message)
         "log_id" => $limanData["log_id"],
         'message' => base64_encode($message),
         'title' => base64_encode($title),
+        'data' => json_encode($data)
     ]);
 }
 
