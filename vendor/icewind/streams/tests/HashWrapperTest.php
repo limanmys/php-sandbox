@@ -23,7 +23,9 @@
 
 namespace Icewind\Streams\Tests;
 
-class HashWrapperTest extends \PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class HashWrapperTest extends TestCase {
 	const DATA = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
 	/**
@@ -70,12 +72,12 @@ class HashWrapperTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testReadHash($algorithm, $expectedHash) {
 		$obtainedHash = null;
-		$callback = function($hash) use (&$obtainedHash) {
+		$callback = function ($hash) use (&$obtainedHash) {
 			$obtainedHash = $hash;
 		};
 
 		$stream = $this->wrapSourceRead($this->getSource(), $algorithm, $callback);
-		while(feof($stream) === false) {
+		while (feof($stream) === false) {
 			fread($stream, 20);
 		}
 		fclose($stream);
@@ -91,7 +93,7 @@ class HashWrapperTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testWriteHash($algorithm, $expectedHash) {
 		$obtainedHash = null;
-		$callback = function($hash) use (&$obtainedHash) {
+		$callback = function ($hash) use (&$obtainedHash) {
 			$obtainedHash = $hash;
 		};
 

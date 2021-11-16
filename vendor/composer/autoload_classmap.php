@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Liman\\Toolkit\\Formatter' => $vendorDir . '/limanmys/toolkit/src/Formatter.php',
     'Liman\\Toolkit\\OS\\Distro' => $vendorDir . '/limanmys/toolkit/src/OS/Distro.php',
     'Liman\\Toolkit\\OS\\DistroInfo' => $vendorDir . '/limanmys/toolkit/src/OS/DistroInfo.php',

@@ -7,8 +7,10 @@
 
 namespace Icewind\SMB\Test;
 
+use Icewind\SMB\ACL;
 use Icewind\SMB\IFileInfo;
 use Icewind\SMB\Wrapped\FileInfo;
+use Icewind\SMB\Wrapped\Parser;
 
 class ParserTest extends \PHPUnit\Framework\TestCase {
 	public function modeProvider() {
@@ -28,7 +30,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase {
 	 * @dataProvider modeProvider
 	 */
 	public function testParseMode($string, $mode) {
-		$parser = new \Icewind\SMB\Wrapped\Parser('UTC');
+		$parser = new Parser('UTC');
 		$this->assertEquals($mode, $parser->parseMode($string), 'Failed parsing ' . $string);
 	}
 
@@ -89,7 +91,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase {
 	 * @dataProvider statProvider
 	 */
 	public function testStat($output, $stat) {
-		$parser = new \Icewind\SMB\Wrapped\Parser('UTC');
+		$parser = new Parser('UTC');
 		$this->assertEquals($stat, $parser->parseStat($output));
 	}
 
@@ -123,9 +125,80 @@ class ParserTest extends \PHPUnit\Framework\TestCase {
 	 * @dataProvider dirProvider
 	 */
 	public function testDir($output, $dir) {
-		$parser = new \Icewind\SMB\Wrapped\Parser('CEST');
+		$parser = new Parser('CEST');
 		$this->assertEquals($dir, $parser->parseDir($output, '', function () {
 			return [];
 		}));
+	}
+
+	public function testParseACLRealWorld() {
+		$parser = new Parser('CEST');
+		$raw = [
+			"lp_load_ex: refreshing parameters",
+			"Initialising global parameters",
+			"Processing section \"[global]\"",
+			"added interface docker0 ip=172.17.0.1 bcast=172.17.255.255 netmask=255.255.0.0",
+			"added interface br-d8e07730e261 ip=172.18.0.1 bcast=172.18.255.255 netmask=255.255.0.0",
+			"Connecting to 192.168.10.187 at port 445",
+			"GENSEC backend 'gssapi_spnego' registered",
+			"GENSEC backend 'gssapi_krb5' registered",
+			"GENSEC backend 'gssapi_krb5_sasl' registered",
+			"GENSEC backend 'spnego' registered",
+			"GENSEC backend 'schannel' registered",
+			"GENSEC backend 'naclrpc_as_system' registered",
+			"Cannot do GSE to an IP address",
+			"Got challenge flags:",
+			"Got NTLMSSP neg_flags=0x628",
+			"NTLMSSP: Set final flags:",
+			"Got NTLMSSP neg_flags=0x620",
+			"NTLMSSP Sign/Seal - Initialising with flags:",
+			"Got NTLMSSP neg_flags=0x620",
+			"NTLMSSP Sign/Seal - Initialising with flags:",
+			"Got NTLMSSP neg_flags=0x620",
+			"REVISION:1",
+			"CONTROL:SR|PD|DI|DP",
+			"OWNER:DESKTOP-MLM38Q5\robin",
+			"GROUP:DESKTOP-MLM38Q5\None",
+			"ACL:Everyone:ALLOWED/OI|CI/R",
+			"ACL:NT AUTHORITY\SYSTEM:ALLOWED/OI|CI/FULL",
+			"ACL:DESKTOP\\robin:ALLOWED/OI|CI/FULL",
+			"ACL:DESKTOP\\test:ALLOWED/OI|CI/R",
+			"ACL:BUILTIN\Administrators:ALLOWED/OI|CI/FULL",
+			"Maximum access: 0x120089"
+		];
+
+		$expected = [
+			"BUILTIN\Administrators" => new ACL(ACL::TYPE_ALLOW, ACL::FLAG_CONTAINER_INHERIT + ACL::FLAG_OBJECT_INHERIT, ACL::MASK_DELETE + ACL::MASK_EXECUTE + ACL::MASK_WRITE + ACL::MASK_READ),
+			"Everyone"               => new ACL(ACL::TYPE_ALLOW, ACL::FLAG_CONTAINER_INHERIT + ACL::FLAG_OBJECT_INHERIT, ACL::MASK_READ),
+			"NT AUTHORITY\SYSTEM"    => new ACL(ACL::TYPE_ALLOW, ACL::FLAG_CONTAINER_INHERIT + ACL::FLAG_OBJECT_INHERIT, ACL::MASK_DELETE + ACL::MASK_EXECUTE + ACL::MASK_WRITE + ACL::MASK_READ),
+			"DESKTOP\\test"          => new ACL(ACL::TYPE_ALLOW, ACL::FLAG_CONTAINER_INHERIT + ACL::FLAG_OBJECT_INHERIT, ACL::MASK_READ),
+			"DESKTOP\\robin"         => new ACL(ACL::TYPE_ALLOW, ACL::FLAG_CONTAINER_INHERIT + ACL::FLAG_OBJECT_INHERIT, ACL::MASK_DELETE + ACL::MASK_EXECUTE + ACL::MASK_WRITE + ACL::MASK_READ),
+		];
+		$result = $parser->parseACLs($raw);
+		$this->assertEquals($expected, $result);
+	}
+
+	public function testParseACLConstructed() {
+		$parser = new Parser('CEST');
+		$raw = [
+			"REVISION:1",
+			"CONTROL:SR|PD|DI|DP",
+			"OWNER:DESKTOP-MLM38Q5\robin",
+			"GROUP:DESKTOP-MLM38Q5\None",
+			"ACL:Everyone:ALLOWED/0x0/READ",
+			"ACL:Test:DENIED/0x0/R",
+			"ACL:Multiple:ALLOWED/0x0/R|X|D",
+			"ACL:Numeric:ALLOWED/0x0/0x10",
+			"Maximum access: 0x120089"
+		];
+
+		$expected = [
+			"Everyone" => new ACL(ACL::TYPE_ALLOW, 0, ACL::MASK_READ + ACL::MASK_EXECUTE),
+			"Test"     => new ACL(ACL::TYPE_DENY, 0, ACL::MASK_READ),
+			"Multiple" => new ACL(ACL::TYPE_ALLOW, 0, ACL::MASK_READ + ACL::MASK_EXECUTE + ACL::MASK_DELETE),
+			"Numeric"  => new ACL(ACL::TYPE_ALLOW, 0, 0x10),
+		];
+		$result = $parser->parseACLs($raw);
+		$this->assertEquals($expected, $result);
 	}
 }
