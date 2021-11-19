@@ -7,14 +7,15 @@ namespace Composer\Autoload;
 class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
 {
     public static $files = array (
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '60799491728b879e74601d83e38b2cad' => __DIR__ . '/..' . '/illuminate/collections/helpers.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'ef65a1626449d89d0811cf9befce46f0' => __DIR__ . '/..' . '/illuminate/events/functions.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -26,7 +27,6 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         '0e423a14e27410a071e5d815d3ffc856' => __DIR__ . '/..' . '/larapack/dd/src/helper.php',
         '17d016dc52a631c1e74d2eb8fdd57342' => __DIR__ . '/..' . '/laravel/helpers/src/helpers.php',
         'cf77bd34554dfe527c3295bb0625bfa0' => __DIR__ . '/..' . '/limanmys/toolkit/src/Helpers.php',
-        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
     );
 
@@ -74,7 +74,6 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         'M' => 
         array (
             'Mpdf\\' => 5,
-            'MongoDB\\' => 8,
             'Medoo\\' => 6,
         ),
         'L' => 
@@ -217,10 +216,6 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
         array (
             0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
         ),
-        'MongoDB\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/mongodb/mongodb/src',
-        ),
         'Medoo\\' => 
         array (
             0 => __DIR__ . '/..' . '/catfan/medoo/src',
@@ -327,6 +322,7 @@ class ComposerStaticInit89aa0d70f722f6d91b86b4f140d4434a
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Liman\\Toolkit\\Formatter' => __DIR__ . '/..' . '/limanmys/toolkit/src/Formatter.php',
         'Liman\\Toolkit\\OS\\Distro' => __DIR__ . '/..' . '/limanmys/toolkit/src/OS/Distro.php',
         'Liman\\Toolkit\\OS\\DistroInfo' => __DIR__ . '/..' . '/limanmys/toolkit/src/OS/DistroInfo.php',

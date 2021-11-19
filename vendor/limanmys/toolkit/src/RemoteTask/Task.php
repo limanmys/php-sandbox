@@ -72,7 +72,7 @@ abstract class Task
 			);
 		}
 		$status = (bool) $this->command(
-			"bash -c '(echo @{:command} | base64 -d | bash) > @{:logFile} 2>&1 & disown && echo 1 || echo 0'",
+			"nohup bash -c '(echo @{:command} | base64 -d | bash) > @{:logFile} 2>&1 & disown' 2>/dev/null 1>/dev/null && echo 1 || echo 0",
 			[
 				'command' => base64_encode($command),
 				'logFile' => $this->logFile
