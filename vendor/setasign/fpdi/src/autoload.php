@@ -8,7 +8,8 @@
  * @license   http://opensource.org/licenses/mit-license The MIT License
  */
 
-spl_autoload_register(static function ($class) {
+// @phpstan-ignore-next-line
+spl_autoload_register(function ($class) {
     if (strpos($class, 'setasign\Fpdi\\') === 0) {
         $filename = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, 14)) . '.php';
         $fullpath = __DIR__ . DIRECTORY_SEPARATOR . $filename;

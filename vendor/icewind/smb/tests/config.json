@@ -1,5 +1,5 @@
 {
-	"host": "skybox.icewind.link",
+	"host": "localhost",
 	"user": "test",
 	"password": "test",
 	"share": "test",

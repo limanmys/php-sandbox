@@ -31,7 +31,7 @@ class ServerFactory {
 		Server::class
 	];
 
-	/** @var ISystem */
+	/** @var System */
 	private $system;
 
 	/** @var IOptions */
@@ -68,12 +68,12 @@ class ServerFactory {
 
 
 	/**
-	 * @param string $host
+	 * @param $host
 	 * @param IAuth $credentials
 	 * @return IServer
 	 * @throws DependencyException
 	 */
-	public function createServer(string $host, IAuth $credentials): IServer {
+	public function createServer($host, IAuth $credentials) {
 		foreach (self::BACKENDS as $backend) {
 			if (call_user_func("$backend::available", $this->system)) {
 				return new $backend($host, $credentials, $this->system, $this->timeZoneProvider, $this->options);

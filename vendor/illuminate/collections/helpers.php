@@ -179,8 +179,8 @@ if (! function_exists('value')) {
      * @param  mixed  $value
      * @return mixed
      */
-    function value($value, ...$args)
+    function value($value)
     {
-        return $value instanceof Closure ? $value(...$args) : $value;
+        return $value instanceof Closure ? $value() : $value;
     }
 }

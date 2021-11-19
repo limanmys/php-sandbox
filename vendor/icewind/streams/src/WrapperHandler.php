@@ -21,10 +21,8 @@
 
 namespace Icewind\Streams;
 
-class WrapperHandler {
-	/** @var resource $context */
-	protected $context;
 
+class WrapperHandler {
 	const NO_SOURCE_DIR = 1;
 
 	/**
@@ -57,7 +55,7 @@ class WrapperHandler {
 	 * @param string|null $class deprecated, class is now automatically generated
 	 * @return bool|resource
 	 */
-	protected static function wrapSource($source, $context = [], $protocol = null, $class = null, $mode = 'r+') {
+	protected static function wrapSource($source, $context = [], $protocol = null, $class = null) {
 		if ($class === null) {
 			$class = static::class;
 		}
@@ -72,7 +70,7 @@ class WrapperHandler {
 			if (self::isDirectoryHandle($source)) {
 				return opendir($protocol . '://', $context);
 			} else {
-				return fopen($protocol . '://', $mode, false, $context);
+				return fopen($protocol . '://', 'r+', false, $context);
 			}
 		} finally {
 			stream_wrapper_unregister($protocol);

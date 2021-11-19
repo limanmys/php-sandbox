@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileBag extends ParameterBag
 {
-    private const FILE_KEYS = ['error', 'name', 'size', 'tmp_name', 'type'];
+    private static $fileKeys = ['error', 'name', 'size', 'tmp_name', 'type'];
 
     /**
      * @param array|UploadedFile[] $parameters An array of HTTP files
@@ -75,20 +75,22 @@ class FileBag extends ParameterBag
             return $file;
         }
 
-        $file = $this->fixPhpFilesArray($file);
-        $keys = array_keys($file);
-        sort($keys);
+        if (\is_array($file)) {
+            $file = $this->fixPhpFilesArray($file);
+            $keys = array_keys($file);
+            sort($keys);
 
-        if (self::FILE_KEYS == $keys) {
-            if (\UPLOAD_ERR_NO_FILE == $file['error']) {
-                $file = null;
+            if ($keys == self::$fileKeys) {
+                if (\UPLOAD_ERR_NO_FILE == $file['error']) {
+                    $file = null;
+                } else {
+                    $file = new UploadedFile($file['tmp_name'], $file['name'], $file['type'], $file['error'], false);
+                }
             } else {
-                $file = new UploadedFile($file['tmp_name'], $file['name'], $file['type'], $file['error'], false);
-            }
-        } else {
-            $file = array_map(function ($v) { return $v instanceof UploadedFile || \is_array($v) ? $this->convertFileInformation($v) : $v; }, $file);
-            if (array_keys($keys) === $keys) {
-                $file = array_filter($file);
+                $file = array_map([$this, 'convertFileInformation'], $file);
+                if (array_keys($keys) === $keys) {
+                    $file = array_filter($file);
+                }
             }
         }
 
@@ -107,21 +109,21 @@ class FileBag extends ParameterBag
      * It's safe to pass an already converted array, in which case this method
      * just returns the original array unmodified.
      *
+     * @param array $data
+     *
      * @return array
      */
-    protected function fixPhpFilesArray(array $data)
+    protected function fixPhpFilesArray($data)
     {
-        // Remove extra key added by PHP 8.1.
-        unset($data['full_path']);
         $keys = array_keys($data);
         sort($keys);
 
-        if (self::FILE_KEYS != $keys || !isset($data['name']) || !\is_array($data['name'])) {
+        if (self::$fileKeys != $keys || !isset($data['name']) || !\is_array($data['name'])) {
             return $data;
         }
 
         $files = $data;
-        foreach (self::FILE_KEYS as $k) {
+        foreach (self::$fileKeys as $k) {
             unset($files[$k]);
         }
 

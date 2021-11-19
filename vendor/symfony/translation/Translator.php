@@ -134,7 +134,6 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         }
 
         $this->assertValidLocale($locale);
-        $locale ?: $locale = class_exists(\Locale::class) ? \Locale::getDefault() : 'en';
 
         $this->resources[$locale][] = [$format, $resource, $domain];
 
@@ -151,7 +150,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
     public function setLocale(string $locale)
     {
         $this->assertValidLocale($locale);
-        $this->locale = $locale;
+        $this->locale = $locale ?? (class_exists(\Locale::class) ? \Locale::getDefault() : 'en');
     }
 
     /**
@@ -159,11 +158,13 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
      */
     public function getLocale()
     {
-        return $this->locale ?: (class_exists(\Locale::class) ? \Locale::getDefault() : 'en');
+        return $this->locale;
     }
 
     /**
      * Sets the fallback locales.
+     *
+     * @param array $locales The fallback locales
      *
      * @throws InvalidArgumentException If a locale contains invalid characters
      */
@@ -213,11 +214,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
             }
         }
 
-        $len = \strlen(MessageCatalogue::INTL_DOMAIN_SUFFIX);
-        if ($this->hasIntlFormatter
-            && ($catalogue->defines($id, $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX)
-            || (\strlen($domain) > $len && 0 === substr_compare($domain, MessageCatalogue::INTL_DOMAIN_SUFFIX, -$len, $len)))
-        ) {
+        if ($this->hasIntlFormatter && $catalogue->defines($id, $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX)) {
             return $this->formatter->formatIntl($catalogue->get($id, $domain), $locale, $parameters);
         }
 
@@ -229,7 +226,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
      */
     public function getCatalogue(string $locale = null)
     {
-        if (!$locale) {
+        if (null === $locale) {
             $locale = $this->getLocale();
         } else {
             $this->assertValidLocale($locale);
@@ -240,14 +237,6 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         }
 
         return $this->catalogues[$locale];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCatalogues(): array
-    {
-        return array_values($this->catalogues);
     }
 
     /**
@@ -411,8 +400,14 @@ EOF
             $this->parentLocales = json_decode(file_get_contents(__DIR__.'/Resources/data/parents.json'), true);
         }
 
-        $originLocale = $locale;
         $locales = [];
+        foreach ($this->fallbackLocales as $fallback) {
+            if ($fallback === $locale) {
+                continue;
+            }
+
+            $locales[] = $fallback;
+        }
 
         while ($locale) {
             $parent = $this->parentLocales[$locale] ?? null;
@@ -433,16 +428,8 @@ EOF
             }
 
             if (null !== $locale) {
-                $locales[] = $locale;
+                array_unshift($locales, $locale);
             }
-        }
-
-        foreach ($this->fallbackLocales as $fallback) {
-            if ($fallback === $originLocale) {
-                continue;
-            }
-
-            $locales[] = $fallback;
         }
 
         return array_unique($locales);
@@ -455,7 +442,7 @@ EOF
      */
     protected function assertValidLocale(string $locale)
     {
-        if (!preg_match('/^[a-z0-9@_\\.\\-]*$/i', (string) $locale)) {
+        if (1 !== preg_match('/^[a-z0-9@_\\.\\-]*$/i', $locale)) {
             throw new InvalidArgumentException(sprintf('Invalid "%s" locale.', $locale));
         }
     }

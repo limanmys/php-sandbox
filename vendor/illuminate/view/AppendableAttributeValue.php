@@ -21,14 +21,4 @@ class AppendableAttributeValue
     {
         $this->value = $value;
     }
-
-    /**
-     * Get the string value.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->value;
-    }
 }

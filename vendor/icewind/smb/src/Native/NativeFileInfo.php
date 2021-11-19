@@ -8,71 +8,88 @@
 namespace Icewind\SMB\Native;
 
 use Icewind\SMB\ACL;
-use Icewind\SMB\Exception\Exception;
 use Icewind\SMB\IFileInfo;
 
 class NativeFileInfo implements IFileInfo {
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	protected $path;
-	/** @var string */
+
+	/**
+	 * @var string
+	 */
 	protected $name;
-	/** @var NativeShare */
+
+	/**
+	 * @var NativeShare
+	 */
 	protected $share;
-	/** @var array{"mode": int, "size": int, "write_time": int}|null */
+
+	/**
+	 * @var array|null
+	 */
 	protected $attributeCache = null;
 
-	public function __construct(NativeShare $share, string $path, string $name) {
+	/**
+	 * @param NativeShare $share
+	 * @param string $path
+	 * @param string $name
+	 */
+	public function __construct($share, $path, $name) {
 		$this->share = $share;
 		$this->path = $path;
 		$this->name = $name;
 	}
 
-	public function getPath(): string {
+	/**
+	 * @return string
+	 */
+	public function getPath() {
 		return $this->path;
 	}
 
-	public function getName(): string {
+	/**
+	 * @return string
+	 */
+	public function getName() {
 		return $this->name;
 	}
 
 	/**
-	 * @return array{"mode": int, "size": int, "write_time": int}
+	 * @return array
 	 */
-	protected function stat(): array {
+	protected function stat() {
 		if (is_null($this->attributeCache)) {
 			$rawAttributes = explode(',', $this->share->getAttribute($this->path, 'system.dos_attr.*'));
-			$attributes = [];
+			$this->attributeCache = [];
 			foreach ($rawAttributes as $rawAttribute) {
 				list($name, $value) = explode(':', $rawAttribute);
 				$name = strtolower($name);
 				if ($name == 'mode') {
-					$attributes[$name] = (int)hexdec(substr($value, 2));
+					$this->attributeCache[$name] = (int)hexdec(substr($value, 2));
 				} else {
-					$attributes[$name] = (int)$value;
+					$this->attributeCache[$name] = (int)$value;
 				}
 			}
-			if (!isset($attributes['mode'])) {
-				throw new Exception("Invalid attribute response");
-			}
-			if (!isset($attributes['size'])) {
-				throw new Exception("Invalid attribute response");
-			}
-			if (!isset($attributes['write_time'])) {
-				throw new Exception("Invalid attribute response");
-			}
-			$this->attributeCache = $attributes;
 		}
 		return $this->attributeCache;
 	}
 
-	public function getSize(): int {
+	/**
+	 * @return int
+	 */
+	public function getSize() {
 		$stat = $this->stat();
 		return $stat['size'];
 	}
 
-	public function getMTime(): int {
+	/**
+	 * @return int
+	 */
+	public function getMTime() {
 		$stat = $this->stat();
-		return $stat['write_time'];
+		return $stat['change_time'];
 	}
 
 	/**
@@ -87,25 +104,34 @@ class NativeFileInfo implements IFileInfo {
 	 * as false (except for `hidden` where we use the unix dotfile convention)
 	 */
 
-	protected function getMode(): int {
+	/**
+	 * @return int
+	 */
+	protected function getMode() {
 		$mode = $this->stat()['mode'];
 
 		// Let us ignore the ATTR_NOT_CONTENT_INDEXED for now
 		$mode &= ~0x00002000;
-
+		
 		return $mode;
 	}
 
-	public function isDirectory(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isDirectory() {
 		$mode = $this->getMode();
 		if ($mode > 0x1000) {
-			return ($mode & 0x4000 && !($mode & 0x8000)); // 0x4000: unix directory flag shares bits with 0xC000: socket
+			return (bool)($mode & 0x4000); // 0x4000: unix directory flag
 		} else {
 			return (bool)($mode & IFileInfo::MODE_DIRECTORY);
 		}
 	}
 
-	public function isReadOnly(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isReadOnly() {
 		$mode = $this->getMode();
 		if ($mode > 0x1000) {
 			return !(bool)($mode & 0x80); // 0x80: owner write permissions
@@ -114,7 +140,10 @@ class NativeFileInfo implements IFileInfo {
 		}
 	}
 
-	public function isHidden(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isHidden() {
 		$mode = $this->getMode();
 		if ($mode > 0x1000) {
 			return strlen($this->name) > 0 && $this->name[0] === '.';
@@ -123,7 +152,10 @@ class NativeFileInfo implements IFileInfo {
 		}
 	}
 
-	public function isSystem(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isSystem() {
 		$mode = $this->getMode();
 		if ($mode > 0x1000) {
 			return false;
@@ -132,7 +164,10 @@ class NativeFileInfo implements IFileInfo {
 		}
 	}
 
-	public function isArchived(): bool {
+	/**
+	 * @return bool
+	 */
+	public function isArchived() {
 		$mode = $this->getMode();
 		if ($mode > 0x1000) {
 			return false;
@@ -150,11 +185,10 @@ class NativeFileInfo implements IFileInfo {
 
 		foreach (explode(',', $attribute) as $acl) {
 			list($user, $permissions) = explode(':', $acl, 2);
-			$user = trim($user, '\\');
 			list($type, $flags, $mask) = explode('/', $permissions);
 			$mask = hexdec($mask);
 
-			$acls[$user] = new ACL((int)$type, (int)$flags, (int)$mask);
+			$acls[$user] = new ACL($type, $flags, $mask);
 		}
 
 		return $acls;

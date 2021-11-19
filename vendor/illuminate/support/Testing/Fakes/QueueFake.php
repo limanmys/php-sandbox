@@ -74,7 +74,7 @@ class QueueFake extends QueueManager implements Queue
             [$job, $callback] = [$this->firstClosureParameterType($job), $job];
         }
 
-        $this->assertPushed($job, function ($job, $pushedQueue) use ($callback, $queue) {
+        return $this->assertPushed($job, function ($job, $pushedQueue) use ($callback, $queue) {
             if ($pushedQueue !== $queue) {
                 return false;
             }

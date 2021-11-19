@@ -30,7 +30,7 @@ class TimeZoneProviderTest extends TestCase {
 	/** @var TimeZoneProvider */
 	private $provider;
 
-	protected function setUp(): void {
+	protected function setUp() {
 		parent::setUp();
 
 		$this->system = $this->createMock(ISystem::class);
@@ -61,7 +61,7 @@ class TimeZoneProviderTest extends TestCase {
 
 	public function testFQDNNoNet() {
 		$this->system->method('getNetPath')
-			->willReturn(null);
+			->willReturn(false);
 		$this->system->method('getDatePath')
 			->willReturn($this->getDummyCommand("+700"));
 
@@ -70,9 +70,9 @@ class TimeZoneProviderTest extends TestCase {
 
 	public function testNoNetNoDate() {
 		$this->system->method('getNetPath')
-			->willReturn(null);
+			->willReturn(false);
 		$this->system->method('getDatePath')
-			->willReturn(null);
+			->willReturn(false);
 
 		$this->assertEquals(date_default_timezone_get(), $this->provider->get('foo.bar.com'));
 	}

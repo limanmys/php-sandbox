@@ -29,6 +29,7 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'PhpOption\\' => array($vendorDir . '/phpoption/phpoption/src/PhpOption'),
     'Mpdf\\' => array($vendorDir . '/mpdf/mpdf/src'),
+    'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),
     'Medoo\\' => array($vendorDir . '/catfan/medoo/src'),
     'Liman\\Toolkit\\' => array($vendorDir . '/limanmys/toolkit/src'),
     'Jenssegers\\Blade\\' => array($vendorDir . '/jenssegers/blade/src'),

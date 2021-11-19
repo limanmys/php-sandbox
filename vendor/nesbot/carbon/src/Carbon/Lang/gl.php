@@ -17,9 +17,6 @@
  * - Diego Vilariño
  * - Sebastian Thierer
  */
-
-use Carbon\CarbonInterface;
-
 return [
     'year' => ':count ano|:count anos',
     'a_year' => 'un ano|:count anos',
@@ -44,7 +41,7 @@ return [
     's' => ':count seg.',
     'ago' => 'hai :time',
     'from_now' => function ($time) {
-        if (str_starts_with($time, 'un')) {
+        if (substr($time, 0, 2) === 'un') {
             return "n$time";
         }
 
@@ -68,19 +65,19 @@ return [
         'LLLL' => 'dddd, D [de] MMMM [de] YYYY H:mm',
     ],
     'calendar' => [
-        'sameDay' => function (CarbonInterface $current) {
+        'sameDay' => function (\Carbon\CarbonInterface $current) {
             return '[hoxe '.($current->hour !== 1 ? 'ás' : 'á').'] LT';
         },
-        'nextDay' => function (CarbonInterface $current) {
+        'nextDay' => function (\Carbon\CarbonInterface $current) {
             return '[mañá '.($current->hour !== 1 ? 'ás' : 'á').'] LT';
         },
-        'nextWeek' => function (CarbonInterface $current) {
+        'nextWeek' => function (\Carbon\CarbonInterface $current) {
             return 'dddd ['.($current->hour !== 1 ? 'ás' : 'á').'] LT';
         },
-        'lastDay' => function (CarbonInterface $current) {
+        'lastDay' => function (\Carbon\CarbonInterface $current) {
             return '[onte '.($current->hour !== 1 ? 'á' : 'a').'] LT';
         },
-        'lastWeek' => function (CarbonInterface $current) {
+        'lastWeek' => function (\Carbon\CarbonInterface $current) {
             return '[o] dddd [pasado '.($current->hour !== 1 ? 'ás' : 'á').'] LT';
         },
         'sameElse' => 'L',

@@ -8,14 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Carbon;
 
 use Carbon\Exceptions\InvalidCastException;
 use Carbon\Exceptions\InvalidTimeZoneException;
 use DateTimeInterface;
 use DateTimeZone;
-use Throwable;
 
 class CarbonTimeZone extends DateTimeZone
 {
@@ -35,7 +33,7 @@ class CarbonTimeZone extends DateTimeZone
 
     protected static function getDateTimeZoneNameFromMixed($timezone)
     {
-        if ($timezone === null) {
+        if (\is_null($timezone)) {
             return date_default_timezone_get();
         }
 
@@ -200,7 +198,7 @@ class CarbonTimeZone extends DateTimeZone
         // @codeCoverageIgnoreStart
         try {
             $offset = @$this->getOffset($date) ?: 0;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $offset = 0;
         }
         // @codeCoverageIgnoreEnd

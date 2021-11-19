@@ -7,63 +7,71 @@
 
 namespace Icewind\SMB\Native;
 
-use Icewind\SMB\StringBuffer;
-
 /**
  * Stream optimized for write only usage
  */
 class NativeWriteStream extends NativeStream {
 	const CHUNK_SIZE = 1048576; // 1MB chunks
+	/**
+	 * @var resource
+	 */
+	private $writeBuffer = null;
 
-	/** @var StringBuffer */
-	private $writeBuffer;
+	private $bufferSize = 0;
 
-	/** @var int */
 	private $pos = 0;
 
-	public function __construct() {
-		$this->writeBuffer = new StringBuffer();
-	}
+	public function stream_open($path, $mode, $options, &$opened_path) {
+		$this->writeBuffer = fopen('php://memory', 'r+');
 
-	public function stream_open($path, $mode, $options, &$opened_path): bool {
 		return parent::stream_open($path, $mode, $options, $opened_path);
 	}
 
 	/**
 	 * Wrap a stream from libsmbclient-php into a regular php stream
 	 *
-	 * @param NativeState $state
+	 * @param \Icewind\SMB\NativeState $state
 	 * @param resource $smbStream
 	 * @param string $mode
 	 * @param string $url
 	 * @return resource
 	 */
-	public static function wrap(NativeState $state, $smbStream, string $mode, string $url) {
-		return parent::wrapClass($state, $smbStream, $mode, $url, NativeWriteStream::class);
+	public static function wrap($state, $smbStream, $mode, $url) {
+		stream_wrapper_register('nativesmb', NativeWriteStream::class);
+		$context = stream_context_create([
+			'nativesmb' => [
+				'state'  => $state,
+				'handle' => $smbStream,
+				'url'    => $url
+			]
+		]);
+		$fh = fopen('nativesmb://', $mode, false, $context);
+		stream_wrapper_unregister('nativesmb');
+		return $fh;
 	}
 
 	public function stream_seek($offset, $whence = SEEK_SET) {
 		$this->flushWrite();
 		$result = parent::stream_seek($offset, $whence);
 		if ($result) {
-			$pos = parent::stream_tell();
-			if ($pos === false) {
-				return false;
-			}
-			$this->pos = $pos;
+			$this->pos = parent::stream_tell();
 		}
 		return $result;
 	}
 
-	private function flushWrite(): void {
-		parent::stream_write($this->writeBuffer->flush());
+	private function flushWrite() {
+		rewind($this->writeBuffer);
+		$this->state->write($this->handle, stream_get_contents($this->writeBuffer), $this->url);
+		$this->writeBuffer = fopen('php://memory', 'r+');
+		$this->bufferSize = 0;
 	}
 
 	public function stream_write($data) {
-		$written = $this->writeBuffer->push($data);
+		$written = fwrite($this->writeBuffer, $data);
+		$this->bufferSize += $written;
 		$this->pos += $written;
 
-		if ($this->writeBuffer->remaining() >= self::CHUNK_SIZE) {
+		if ($this->bufferSize >= self::CHUNK_SIZE) {
 			$this->flushWrite();
 		}
 

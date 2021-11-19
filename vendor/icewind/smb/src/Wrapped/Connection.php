@@ -7,11 +7,9 @@
 
 namespace Icewind\SMB\Wrapped;
 
-use Icewind\SMB\Exception\AccessDeniedException;
 use Icewind\SMB\Exception\AuthenticationException;
 use Icewind\SMB\Exception\ConnectException;
 use Icewind\SMB\Exception\ConnectionException;
-use Icewind\SMB\Exception\ConnectionRefusedException;
 use Icewind\SMB\Exception\InvalidHostException;
 use Icewind\SMB\Exception\NoLoginServerException;
 
@@ -22,12 +20,7 @@ class Connection extends RawConnection {
 	/** @var Parser */
 	private $parser;
 
-	/**
-	 * @param string $command
-	 * @param Parser $parser
-	 * @param array<string, string> $env
-	 */
-	public function __construct(string $command, Parser $parser, array $env = []) {
+	public function __construct($command, Parser $parser, $env = []) {
 		parent::__construct($command, $env);
 		$this->parser = $parser;
 	}
@@ -37,61 +30,78 @@ class Connection extends RawConnection {
 	 *
 	 * @param string $input
 	 */
-	public function write(string $input) {
-		return parent::write($input . PHP_EOL);
+	public function write($input) {
+		parent::write($input . PHP_EOL);
 	}
 
 	/**
 	 * @throws ConnectException
 	 */
-	public function clearTillPrompt(): void {
+	public function clearTillPrompt() {
 		$this->write('');
 		do {
-			$promptLine = $this->readTillPrompt();
-			if ($promptLine === false) {
-				break;
-			}
+			$promptLine = $this->readLine();
 			$this->parser->checkConnectionError($promptLine);
 		} while (!$this->isPrompt($promptLine));
-		if ($this->write('') === false) {
-			throw new ConnectionRefusedException();
-		}
-		$this->readTillPrompt();
+		$this->write('');
+		$this->readLine();
 	}
 
 	/**
 	 * get all unprocessed output from smbclient until the next prompt
 	 *
+	 * @param callable $callback (optional) callback to call for every line read
 	 * @return string[]
 	 * @throws AuthenticationException
 	 * @throws ConnectException
 	 * @throws ConnectionException
 	 * @throws InvalidHostException
 	 * @throws NoLoginServerException
-	 * @throws AccessDeniedException
 	 */
-	public function read(): array {
+	public function read(callable $callback = null) {
 		if (!$this->isValid()) {
 			throw new ConnectionException('Connection not valid');
 		}
-		$output = $this->readTillPrompt();
-		if ($output === false) {
-			$this->unknownError(false);
+		$promptLine = $this->readLine(); //first line is prompt
+		$this->parser->checkConnectionError($promptLine);
+
+		$output = [];
+		if (!$this->isPrompt($promptLine)) {
+			$line = $promptLine;
+		} else {
+			$line = $this->readLine();
 		}
-		$output = explode("\n", $output);
-		// last line contains the prompt
-		array_pop($output);
+		if ($line === false) {
+			$this->unknownError($promptLine);
+		}
+		while (!$this->isPrompt($line)) { //next prompt functions as delimiter
+			if (is_callable($callback)) {
+				$result = $callback($line);
+				if ($result === false) { // allow the callback to close the connection for infinite running commands
+					$this->close(true);
+					break;
+				}
+			} else {
+				$output[] .= $line;
+			}
+			$line = $this->readLine();
+		}
 		return $output;
 	}
 
-	private function isPrompt(string $line): bool {
-		return substr($line, 0, self::DELIMITER_LENGTH) === self::DELIMITER;
+	/**
+	 * Check
+	 *
+	 * @param $line
+	 * @return bool
+	 */
+	private function isPrompt($line) {
+		return mb_substr($line, 0, self::DELIMITER_LENGTH) === self::DELIMITER || $line === false;
 	}
 
 	/**
-	 * @param string|bool $promptLine (optional) prompt line that might contain some info about the error
+	 * @param string $promptLine (optional) prompt line that might contain some info about the error
 	 * @throws ConnectException
-	 * @return no-return
 	 */
 	private function unknownError($promptLine = '') {
 		if ($promptLine) { //maybe we have some error we missed on the previous line
@@ -106,11 +116,11 @@ class Connection extends RawConnection {
 		}
 	}
 
-	public function close(bool $terminate = true): void {
+	public function close($terminate = true) {
 		if (get_resource_type($this->getInputStream()) === 'stream') {
 			// ignore any errors while trying to send the close command, the process might already be dead
 			@$this->write('close' . PHP_EOL);
 		}
-		$this->close_process($terminate);
+		parent::close($terminate);
 	}
 }

@@ -62,13 +62,14 @@ abstract class Wrapper extends WrapperHandler implements File, Directory {
 	public function stream_set_option($option, $arg1, $arg2) {
 		switch ($option) {
 			case STREAM_OPTION_BLOCKING:
-				return stream_set_blocking($this->source, (bool)$arg1);
+				stream_set_blocking($this->source, $arg1);
+				break;
 			case STREAM_OPTION_READ_TIMEOUT:
-				return stream_set_timeout($this->source, $arg1, $arg2);
+				stream_set_timeout($this->source, $arg1, $arg2);
+				break;
 			case STREAM_OPTION_WRITE_BUFFER:
-				return stream_set_write_buffer($this->source, $arg1) === 0;
+				stream_set_write_buffer($this->source, $arg1);
 		}
-		return false;
 	}
 
 	public function stream_truncate($size) {
@@ -92,9 +93,7 @@ abstract class Wrapper extends WrapperHandler implements File, Directory {
 	}
 
 	public function stream_close() {
-		if (is_resource($this->source)) {
-			return fclose($this->source);
-		}
+		return fclose($this->source);
 	}
 
 	public function dir_readdir() {

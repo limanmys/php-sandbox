@@ -18,9 +18,6 @@
  * - Serhan Apaydın
  * - JD Isaacks
  */
-
-use Carbon\CarbonInterface;
-
 return [
     'year' => ':count godina|:count godine|:count godina',
     'y' => ':count godina|:count godine|:count godina',
@@ -58,7 +55,7 @@ return [
     'calendar' => [
         'sameDay' => '[danas u] LT',
         'nextDay' => '[sutra u] LT',
-        'nextWeek' => function (CarbonInterface $current) {
+        'nextWeek' => function (\Carbon\CarbonInterface $current) {
             switch ($current->dayOfWeek) {
                 case 0:
                     return '[u] [nedjelju] [u] LT';
@@ -71,7 +68,7 @@ return [
             }
         },
         'lastDay' => '[jučer u] LT',
-        'lastWeek' => function (CarbonInterface $current) {
+        'lastWeek' => function (\Carbon\CarbonInterface $current) {
             switch ($current->dayOfWeek) {
                 case 0:
                 case 3:

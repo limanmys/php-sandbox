@@ -25,15 +25,11 @@
  * - Peter (UnrulyNatives)
  * - Qrzysio
  * - Jan (aso824)
- * - diverpl
  */
-
-use Carbon\CarbonInterface;
-
 return [
     'year' => ':count rok|:count lata|:count lat',
     'a_year' => 'rok|:count lata|:count lat',
-    'y' => ':count r|:count l|:count l',
+    'y' => ':count r|:count l',
     'month' => ':count miesiąc|:count miesiące|:count miesięcy',
     'a_month' => 'miesiąc|:count miesiące|:count miesięcy',
     'm' => ':count mies.',
@@ -48,7 +44,7 @@ return [
     'h' => ':count godz.',
     'minute' => ':count minuta|:count minuty|:count minut',
     'a_minute' => 'minuta|:count minuty|:count minut',
-    'min' => ':count min',
+    'min' => ':count min.',
     'second' => ':count sekunda|:count sekundy|:count sekund',
     'a_second' => '{1}kilka sekund|:count sekunda|:count sekundy|:count sekund',
     's' => ':count sek.',
@@ -76,7 +72,7 @@ return [
     'calendar' => [
         'sameDay' => '[Dziś o] LT',
         'nextDay' => '[Jutro o] LT',
-        'nextWeek' => function (CarbonInterface $date) {
+        'nextWeek' => function (\Carbon\CarbonInterface $date) {
             switch ($date->dayOfWeek) {
                 case 0:
                     return '[W niedzielę o] LT';
@@ -91,7 +87,7 @@ return [
             }
         },
         'lastDay' => '[Wczoraj o] LT',
-        'lastWeek' => function (CarbonInterface $date) {
+        'lastWeek' => function (\Carbon\CarbonInterface $date) {
             switch ($date->dayOfWeek) {
                 case 0:
                     return '[W zeszłą niedzielę o] LT';

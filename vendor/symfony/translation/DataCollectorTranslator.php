@@ -21,9 +21,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DataCollectorTranslator implements TranslatorInterface, TranslatorBagInterface, LocaleAwareInterface, WarmableInterface
 {
-    public const MESSAGE_DEFINED = 0;
-    public const MESSAGE_MISSING = 1;
-    public const MESSAGE_EQUALS_FALLBACK = 2;
+    const MESSAGE_DEFINED = 0;
+    const MESSAGE_MISSING = 1;
+    const MESSAGE_EQUALS_FALLBACK = 2;
 
     /**
      * @var TranslatorInterface|TranslatorBagInterface
@@ -77,14 +77,6 @@ class DataCollectorTranslator implements TranslatorInterface, TranslatorBagInter
     public function getCatalogue(string $locale = null)
     {
         return $this->translator->getCatalogue($locale);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCatalogues(): array
-    {
-        return $this->translator->getCatalogues();
     }
 
     /**

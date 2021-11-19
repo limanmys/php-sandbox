@@ -21,10 +21,10 @@ use Symfony\Component\VarDumper\Cloner\DumperInterface;
  */
 abstract class AbstractDumper implements DataDumperInterface, DumperInterface
 {
-    public const DUMP_LIGHT_ARRAY = 1;
-    public const DUMP_STRING_LENGTH = 2;
-    public const DUMP_COMMA_SEPARATOR = 4;
-    public const DUMP_TRAILING_COMMA = 8;
+    const DUMP_LIGHT_ARRAY = 1;
+    const DUMP_STRING_LENGTH = 2;
+    const DUMP_COMMA_SEPARATOR = 4;
+    const DUMP_TRAILING_COMMA = 8;
 
     public static $defaultOutput = 'php://output';
 
@@ -63,14 +63,14 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
      */
     public function setOutput($output)
     {
-        $prev = $this->outputStream ?? $this->lineDumper;
+        $prev = null !== $this->outputStream ? $this->outputStream : $this->lineDumper;
 
         if (\is_callable($output)) {
             $this->outputStream = null;
             $this->lineDumper = $output;
         } else {
             if (\is_string($output)) {
-                $output = fopen($output, 'w');
+                $output = fopen($output, 'wb');
             }
             $this->outputStream = $output;
             $this->lineDumper = [$this, 'echoLine'];
@@ -128,7 +128,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
         }
 
         if ($returnDump = true === $output) {
-            $output = fopen('php://memory', 'r+');
+            $output = fopen('php://memory', 'r+b');
         }
         if ($output) {
             $prevOutput = $this->setOutput($output);

@@ -41,13 +41,6 @@ class CallQueuedListener implements ShouldQueue
     public $tries;
 
     /**
-     * The maximum number of exceptions allowed, regardless of attempts.
-     *
-     * @var int
-     */
-    public $maxExceptions;
-
-    /**
      * The number of seconds to wait before retrying a job that encountered an uncaught exception.
      *
      * @var int
@@ -67,13 +60,6 @@ class CallQueuedListener implements ShouldQueue
      * @var int
      */
     public $timeout;
-
-    /**
-     * Indicates if the job should be encrypted.
-     *
-     * @var bool
-     */
-    public $shouldBeEncrypted = false;
 
     /**
      * Create a new job instance.

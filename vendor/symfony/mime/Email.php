@@ -24,11 +24,11 @@ use Symfony\Component\Mime\Part\TextPart;
  */
 class Email extends Message
 {
-    public const PRIORITY_HIGHEST = 1;
-    public const PRIORITY_HIGH = 2;
-    public const PRIORITY_NORMAL = 3;
-    public const PRIORITY_LOW = 4;
-    public const PRIORITY_LOWEST = 5;
+    const PRIORITY_HIGHEST = 1;
+    const PRIORITY_HIGH = 2;
+    const PRIORITY_NORMAL = 3;
+    const PRIORITY_LOW = 4;
+    const PRIORITY_LOWEST = 5;
 
     private const PRIORITY_MAP = [
         self::PRIORITY_HIGHEST => 'Highest',
@@ -266,7 +266,7 @@ class Email extends Message
      */
     public function getPriority(): int
     {
-        [$priority] = sscanf($this->getHeaders()->getHeaderBody('X-Priority') ?? '', '%[1-5]');
+        list($priority) = sscanf($this->getHeaders()->getHeaderBody('X-Priority'), '%[1-5]');
 
         return $priority ?? 3;
     }
@@ -378,7 +378,7 @@ class Email extends Message
     }
 
     /**
-     * @return array|DataPart[]
+     * @return DataPart[]
      */
     public function getAttachments(): array
     {
@@ -485,7 +485,6 @@ class Email extends Message
                 $attachment['inline'] = true;
                 $inlineParts[$name] = $part = $this->createDataPart($attachment);
                 $html = str_replace('cid:'.$name, 'cid:'.$part->getContentId(), $html);
-                $part->setName($part->getContentId());
                 continue 2;
             }
             $attachmentParts[] = $this->createDataPart($attachment);

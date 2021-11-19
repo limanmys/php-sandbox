@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Bus\Events\BatchDispatched;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
-use Illuminate\Queue\SerializableClosureFactory;
+use Illuminate\Queue\SerializableClosure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Throwable;
@@ -55,21 +55,6 @@ class PendingBatch
     }
 
     /**
-     * Add jobs to the batch.
-     *
-     * @param  iterable  $jobs
-     * @return $this
-     */
-    public function add($jobs)
-    {
-        foreach ($jobs as $job) {
-            $this->jobs->push($job);
-        }
-
-        return $this;
-    }
-
-    /**
      * Add a callback to be executed after all jobs in the batch have executed successfully.
      *
      * @param  callable  $callback
@@ -78,7 +63,7 @@ class PendingBatch
     public function then($callback)
     {
         $this->options['then'][] = $callback instanceof Closure
-                        ? SerializableClosureFactory::make($callback)
+                        ? new SerializableClosure($callback)
                         : $callback;
 
         return $this;
@@ -103,7 +88,7 @@ class PendingBatch
     public function catch($callback)
     {
         $this->options['catch'][] = $callback instanceof Closure
-                    ? SerializableClosureFactory::make($callback)
+                    ? new SerializableClosure($callback)
                     : $callback;
 
         return $this;
@@ -128,7 +113,7 @@ class PendingBatch
     public function finally($callback)
     {
         $this->options['finally'][] = $callback instanceof Closure
-                    ? SerializableClosureFactory::make($callback)
+                    ? new SerializableClosure($callback)
                     : $callback;
 
         return $this;

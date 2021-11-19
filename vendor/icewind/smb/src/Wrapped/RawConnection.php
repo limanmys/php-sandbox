@@ -30,10 +30,10 @@ class RawConnection {
 	 * $pipes[4] holds the stream for writing files
 	 * $pipes[5] holds the stream for reading files
 	 */
-	private $pipes = [];
+	private $pipes;
 
 	/**
-	 * @var resource|null $process
+	 * @var resource $process
 	 */
 	private $process;
 
@@ -42,20 +42,17 @@ class RawConnection {
 	 */
 	private $authStream = null;
 
-	/**
-	 * @param string $command
-	 * @param array<string, string> $env
-	 */
-	public function __construct(string $command, array $env = []) {
+	private $connected = false;
+
+	public function __construct($command, array $env = []) {
 		$this->command = $command;
 		$this->env = $env;
 	}
 
 	/**
 	 * @throws ConnectException
-	 * @psalm-assert resource $this->process
 	 */
-	public function connect(): void {
+	public function connect() {
 		if (is_null($this->getAuthStream())) {
 			throw new ConnectException('Authentication not set before connecting');
 		}
@@ -71,8 +68,7 @@ class RawConnection {
 
 		setlocale(LC_ALL, Server::LOCALE);
 		$env = array_merge($this->env, [
-			'CLI_FORCE_INTERACTIVE' => 'y', // Make sure the prompt is displayed
-			'CLI_NO_READLINE'       => 1,   // Not all distros build smbclient with readline, disable it to get consistent behaviour
+			'CLI_FORCE_INTERACTIVE' => 'y', // Needed or the prompt isn't displayed!!
 			'LC_ALL'                => Server::LOCALE,
 			'LANG'                  => Server::LOCALE,
 			'COLUMNS'               => 8192 // prevent smbclient from line-wrapping it's output
@@ -81,15 +77,15 @@ class RawConnection {
 		if (!$this->isValid()) {
 			throw new ConnectionException();
 		}
+		$this->connected = true;
 	}
 
 	/**
 	 * check if the connection is still active
 	 *
 	 * @return bool
-	 * @psalm-assert-if-true resource $this->process
 	 */
-	public function isValid(): bool {
+	public function isValid() {
 		if (is_resource($this->process)) {
 			$status = proc_get_status($this->process);
 			return $status['running'];
@@ -102,29 +98,10 @@ class RawConnection {
 	 * send input to the process
 	 *
 	 * @param string $input
-	 * @return int|bool
 	 */
-	public function write(string $input) {
-		$result = @fwrite($this->getInputStream(), $input);
+	public function write($input) {
+		fwrite($this->getInputStream(), $input);
 		fflush($this->getInputStream());
-		return $result;
-	}
-
-	/**
-	 * read output till the next prompt
-	 *
-	 * @return string|false
-	 */
-	public function readTillPrompt() {
-		$output = "";
-		do {
-			$chunk = $this->readLine('\> ');
-			if ($chunk === false) {
-				return false;
-			}
-			$output .= $chunk;
-		} while (strlen($chunk) == 4096 && strpos($chunk, "smb:") === false);
-		return $output;
 	}
 
 	/**
@@ -132,26 +109,25 @@ class RawConnection {
 	 *
 	 * @return string|false
 	 */
-	public function readLine(string $end = "\n") {
-		return stream_get_line($this->getOutputStream(), 4096, $end);
+	public function readLine() {
+		return stream_get_line($this->getOutputStream(), 4086, "\n");
 	}
 
 	/**
 	 * read a line of output
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function readError() {
-		$line = stream_get_line($this->getErrorStream(), 4086);
-		return $line !== false ? trim($line) : false;
+		return trim(stream_get_line($this->getErrorStream(), 4086));
 	}
 
 	/**
 	 * get all output until the process closes
 	 *
-	 * @return string[]
+	 * @return array
 	 */
-	public function readAll(): array {
+	public function readAll() {
 		$output = [];
 		while ($line = $this->readLine()) {
 			$output[] = $line;
@@ -159,75 +135,40 @@ class RawConnection {
 		return $output;
 	}
 
-	/**
-	 * @return resource
-	 */
 	public function getInputStream() {
 		return $this->pipes[0];
 	}
 
-	/**
-	 * @return resource
-	 */
 	public function getOutputStream() {
 		return $this->pipes[1];
 	}
 
-	/**
-	 * @return resource
-	 */
 	public function getErrorStream() {
 		return $this->pipes[2];
 	}
 
-	/**
-	 * @return resource|null
-	 */
 	public function getAuthStream() {
 		return $this->authStream;
 	}
 
-	/**
-	 * @return resource
-	 */
 	public function getFileInputStream() {
 		return $this->pipes[4];
 	}
 
-	/**
-	 * @return resource
-	 */
 	public function getFileOutputStream() {
 		return $this->pipes[5];
 	}
 
-	/**
-	 * @param string|null $user
-	 * @param string|null $password
-	 * @psalm-assert resource $this->authStream
-	 */
-	public function writeAuthentication(?string $user, ?string $password): void {
-		$auth = ($password === null)
+	public function writeAuthentication($user, $password) {
+		$auth = ($password === false)
 			? "username=$user"
 			: "username=$user\npassword=$password\n";
 
 		$this->authStream = fopen('php://temp', 'w+');
-		fwrite($this->authStream, $auth);
+		fwrite($this->getAuthStream(), $auth);
 	}
 
-	/**
-	 * @param bool $terminate
-	 * @psalm-assert null $this->process
-	 */
-	public function close(bool $terminate = true): void {
-		$this->close_process($terminate);
-	}
-
-	/**
-	 * @param bool $terminate
-	 * @psalm-assert null $this->process
-	 */
-	protected function close_process(bool $terminate = true): void {
+	public function close($terminate = true) {
 		if (!is_resource($this->process)) {
 			return;
 		}
@@ -235,10 +176,9 @@ class RawConnection {
 			proc_terminate($this->process);
 		}
 		proc_close($this->process);
-		$this->process = null;
 	}
 
-	public function reconnect(): void {
+	public function reconnect() {
 		$this->close();
 		$this->connect();
 	}

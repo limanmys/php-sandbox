@@ -1,8 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use Carbon\Cli\Invoker;
-
 $dir = __DIR__.'/..';
 
 if (!file_exists($dir.'/autoload.php')) {
@@ -20,4 +18,4 @@ if (!file_exists($dir.'/autoload.php')) {
 
 require $dir.'/autoload.php';
 
-exit((new Invoker())(...$argv) ? 0 : 1);
+exit((new \Carbon\Cli\Invoker())(...$argv) ? 0 : 1);

@@ -25,27 +25,27 @@ namespace Icewind\Streams;
  */
 class CallbackWrapper extends Wrapper {
 	/**
-	 * @var callable|null
+	 * @var callable
 	 */
 	protected $readCallback;
 
 	/**
-	 * @var callable|null
+	 * @var callable
 	 */
 	protected $writeCallback;
 
 	/**
-	 * @var callable|null
+	 * @var callable
 	 */
 	protected $closeCallback;
 
 	/**
-	 * @var callable|null
+	 * @var callable
 	 */
 	protected $readDirCallBack;
 
 	/**
-	 * @var callable|null
+	 * @var callable
 	 */
 	protected $preCloseCallback;
 
@@ -63,11 +63,11 @@ class CallbackWrapper extends Wrapper {
 	 */
 	public static function wrap($source, $read = null, $write = null, $close = null, $readDir = null, $preClose = null) {
 		$context = [
-			'source'   => $source,
-			'read'     => $read,
-			'write'    => $write,
-			'close'    => $close,
-			'readDir'  => $readDir,
+			'source' => $source,
+			'read' => $read,
+			'write' => $write,
+			'close' => $close,
+			'readDir' => $readDir,
 			'preClose' => $preClose,
 		];
 		return self::wrapSource($source, $context);

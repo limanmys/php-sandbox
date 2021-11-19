@@ -11,8 +11,6 @@ use Icewind\SMB\AbstractServer;
 use Icewind\SMB\Exception\AuthenticationException;
 use Icewind\SMB\Exception\ConnectException;
 use Icewind\SMB\Exception\ConnectionException;
-use Icewind\SMB\Exception\ConnectionRefusedException;
-use Icewind\SMB\Exception\Exception;
 use Icewind\SMB\Exception\InvalidHostException;
 use Icewind\SMB\IShare;
 use Icewind\SMB\ISystem;
@@ -24,11 +22,11 @@ class Server extends AbstractServer {
 	 * @param ISystem $system
 	 * @return bool
 	 */
-	public static function available(ISystem $system): bool {
-		return $system->getSmbclientPath() !== null;
+	public static function available(ISystem $system) {
+		return $system->getSmbclientPath();
 	}
 
-	private function getAuthFileArgument(): string {
+	private function getAuthFileArgument() {
 		if ($this->getAuth()->getUsername()) {
 			return '--authentication-file=' . $this->system->getFD(3);
 		} else {
@@ -43,30 +41,22 @@ class Server extends AbstractServer {
 	 * @throws InvalidHostException
 	 * @throws ConnectException
 	 */
-	public function listShares(): array {
-		$maxProtocol = $this->options->getMaxProtocol();
-		$minProtocol = $this->options->getMinProtocol();
-		$smbClient = $this->system->getSmbclientPath();
-		if ($smbClient === null) {
-			throw new Exception("Backend not available");
-		}
+	public function listShares() {
 		$command = sprintf(
-			'%s %s %s %s %s -L %s',
-			$smbClient,
+			'%s %s %s -L %s',
+			$this->system->getSmbclientPath(),
 			$this->getAuthFileArgument(),
 			$this->getAuth()->getExtraCommandLineArguments(),
-			$maxProtocol ? "--option='client max protocol=" . $maxProtocol . "'" : "",
-			$minProtocol ? "--option='client min protocol=" . $minProtocol . "'" : "",
 			escapeshellarg('//' . $this->getHost())
 		);
 		$connection = new RawConnection($command);
 		$connection->writeAuthentication($this->getAuth()->getUsername(), $this->getAuth()->getPassword());
 		$connection->connect();
 		if (!$connection->isValid()) {
-			throw new ConnectionException((string)$connection->readLine());
+			throw new ConnectionException($connection->readLine());
 		}
 
-		$parser = new Parser($this->timezoneProvider->get($this->host));
+		$parser = new Parser($this->timezoneProvider);
 
 		$output = $connection->readAll();
 		if (isset($output[0])) {
@@ -81,14 +71,11 @@ class Server extends AbstractServer {
 		if (isset($output[0])) {
 			$parser->checkConnectionError($output[0]);
 		}
-		if (count($output) === 0) {
-			throw new ConnectionRefusedException();
-		}
 
 		$shareNames = $parser->parseListShares($output);
 
 		$shares = [];
-		foreach ($shareNames as $name => $_description) {
+		foreach ($shareNames as $name => $description) {
 			$shares[] = $this->getShare($name);
 		}
 		return $shares;
@@ -98,7 +85,7 @@ class Server extends AbstractServer {
 	 * @param string $name
 	 * @return IShare
 	 */
-	public function getShare(string $name): IShare {
+	public function getShare($name) {
 		return new Share($this, $name, $this->system);
 	}
 }

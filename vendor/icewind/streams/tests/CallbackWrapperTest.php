@@ -22,8 +22,10 @@ class CallbackWrapperTest extends WrapperTest {
 		return \Icewind\Streams\CallbackWrapper::wrap($source, $read, $write, $close, $readDir, $preClose);
 	}
 
+	/**
+	 * @expectedException \BadMethodCallException
+	 */
 	public function testWrapInvalidSource() {
-		$this->expectException(\BadMethodCallException::class);
 		$this->wrapSource('foo');
 	}
 
@@ -40,11 +42,11 @@ class CallbackWrapperTest extends WrapperTest {
 		rewind($source);
 
 		$wrapped = $this->wrapSource($source, $callBack);
-		$this->assertSame('foo', fread($wrapped, 3));
+		$this->assertEquals('foo', fread($wrapped, 3));
 		$this->assertTrue($called);
 
-		$this->assertSame('bar', fread($wrapped, 1000));
-		$this->assertSame(6, $bytesRead);
+		$this->assertEquals('bar', fread($wrapped, 1000));
+		$this->assertEquals(6, $bytesRead);
 	}
 
 	public function testWriteCallback() {
@@ -57,7 +59,7 @@ class CallbackWrapperTest extends WrapperTest {
 
 		$wrapped = $this->wrapSource($source, null, $callBack);
 		fwrite($wrapped, 'foobar');
-		$this->assertSame('foobar', $lastData);
+		$this->assertEquals('foobar', $lastData);
 	}
 
 	public function testCloseCallback() {

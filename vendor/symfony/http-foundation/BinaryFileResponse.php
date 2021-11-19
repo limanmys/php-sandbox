@@ -65,13 +65,9 @@ class BinaryFileResponse extends Response
      * @param bool                $autoLastModified   Whether the Last-Modified header should be automatically set
      *
      * @return static
-     *
-     * @deprecated since Symfony 5.2, use __construct() instead.
      */
     public static function create($file = null, int $status = 200, array $headers = [], bool $public = true, string $contentDisposition = null, bool $autoEtag = false, bool $autoLastModified = true)
     {
-        trigger_deprecation('symfony/http-foundation', '5.2', 'The "%s()" method is deprecated, use "new %s()" instead.', __METHOD__, static::class);
-
         return new static($file, $status, $headers, $public, $contentDisposition, $autoEtag, $autoLastModified);
     }
 
@@ -160,7 +156,7 @@ class BinaryFileResponse extends Response
             $filename = $this->file->getFilename();
         }
 
-        if ('' === $filenameFallback && (!preg_match('/^[\x20-\x7e]*$/', $filename) || str_contains($filename, '%'))) {
+        if ('' === $filenameFallback && (!preg_match('/^[\x20-\x7e]*$/', $filename) || false !== strpos($filename, '%'))) {
             $encoding = mb_detect_encoding($filename, null, true) ?: '8bit';
 
             for ($i = 0, $filenameLength = mb_strlen($filename, $encoding); $i < $filenameLength; ++$i) {
@@ -221,7 +217,7 @@ class BinaryFileResponse extends Response
                 // @link https://www.nginx.com/resources/wiki/start/topics/examples/x-accel/#x-accel-redirect
                 $parts = HeaderUtils::split($request->headers->get('X-Accel-Mapping', ''), ',=');
                 foreach ($parts as $part) {
-                    [$pathPrefix, $location] = $part;
+                    list($pathPrefix, $location) = $part;
                     if (substr($path, 0, \strlen($pathPrefix)) === $pathPrefix) {
                         $path = $location.substr($path, \strlen($pathPrefix));
                         // Only set X-Accel-Redirect header if a valid URI can be produced
@@ -240,8 +236,8 @@ class BinaryFileResponse extends Response
             if (!$request->headers->has('If-Range') || $this->hasValidIfRangeHeader($request->headers->get('If-Range'))) {
                 $range = $request->headers->get('Range');
 
-                if (str_starts_with($range, 'bytes=')) {
-                    [$start, $end] = explode('-', substr($range, 6), 2) + [0];
+                if (0 === strpos($range, 'bytes=')) {
+                    list($start, $end) = explode('-', substr($range, 6), 2) + [0];
 
                     $end = ('' === $end) ? $fileSize - 1 : (int) $end;
 
@@ -301,15 +297,15 @@ class BinaryFileResponse extends Response
             return $this;
         }
 
-        $out = fopen('php://output', 'w');
-        $file = fopen($this->file->getPathname(), 'r');
+        $out = fopen('php://output', 'wb');
+        $file = fopen($this->file->getPathname(), 'rb');
 
         stream_copy_to_stream($file, $out, $this->maxlen, $this->offset);
 
         fclose($out);
         fclose($file);
 
-        if ($this->deleteFileAfterSend && is_file($this->file->getPathname())) {
+        if ($this->deleteFileAfterSend && file_exists($this->file->getPathname())) {
             unlink($this->file->getPathname());
         }
 

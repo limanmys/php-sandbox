@@ -23,9 +23,6 @@
  * - Sebastian Thierer
  * - Claudson Martins (claudsonm)
  */
-
-use Carbon\CarbonInterface;
-
 return [
     'year' => ':count ano|:count anos',
     'a_year' => 'um ano|:count anos',
@@ -84,7 +81,7 @@ return [
         'nextDay' => '[Amanhã às] LT',
         'nextWeek' => 'dddd [às] LT',
         'lastDay' => '[Ontem às] LT',
-        'lastWeek' => function (CarbonInterface $date) {
+        'lastWeek' => function (\Carbon\CarbonInterface $date) {
             switch ($date->dayOfWeek) {
                 case 0:
                 case 6:

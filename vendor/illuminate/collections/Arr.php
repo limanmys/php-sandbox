@@ -394,19 +394,6 @@ class Arr
     }
 
     /**
-     * Determines if an array is a list.
-     *
-     * An array is a "list" if all array keys are sequential integers starting from 0 with no gaps in between.
-     *
-     * @param  array  $array
-     * @return bool
-     */
-    public static function isList($array)
-    {
-        return ! self::isAssoc($array);
-    }
-
-    /**
      * Get a subset of the items from the given array.
      *
      * @param  array  $array
@@ -504,17 +491,6 @@ class Arr
         static::forget($array, $key);
 
         return $value;
-    }
-
-    /**
-     * Convert the array into a query string.
-     *
-     * @param  array  $array
-     * @return string
-     */
-    public static function query($array)
-    {
-        return http_build_query($array, '', '&', PHP_QUERY_RFC3986);
     }
 
     /**
@@ -628,7 +604,7 @@ class Arr
      * Sort the array using the given callback or "dot" notation.
      *
      * @param  array  $array
-     * @param  callable|array|string|null  $callback
+     * @param  callable|string|null  $callback
      * @return array
      */
     public static function sort($array, $callback = null)
@@ -666,26 +642,14 @@ class Arr
     }
 
     /**
-     * Conditionally compile classes from an array into a CSS class list.
+     * Convert the array into a query string.
      *
      * @param  array  $array
      * @return string
      */
-    public static function toCssClasses($array)
+    public static function query($array)
     {
-        $classList = static::wrap($array);
-
-        $classes = [];
-
-        foreach ($classList as $class => $constraint) {
-            if (is_numeric($class)) {
-                $classes[] = $constraint;
-            } elseif ($constraint) {
-                $classes[] = $class;
-            }
-        }
-
-        return implode(' ', $classes);
+        return http_build_query($array, '', '&', PHP_QUERY_RFC3986);
     }
 
     /**

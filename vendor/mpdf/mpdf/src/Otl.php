@@ -4364,7 +4364,7 @@ class Otl
 			$this->seek($offset);
 			$ClassFormat = $this->read_ushort();
 			$GlyphClass = [];
-			$GlyphByClass = [];
+			//      $GlyphByClass = array(0=>array());  // NB This forces an index[0]
 			if ($ClassFormat == 1) {
 				$StartGlyph = $this->read_ushort();
 				$GlyphCount = $this->read_ushort();
@@ -6135,25 +6135,16 @@ class Otl
 		if ($available == '') {
 			return '';
 		}
-
-		$tags = $ietf
-			? preg_split('/-/', $ietf)
-			: [];
-
+		$tags = preg_split('/-/', $ietf);
 		$lang = '';
 		$country = '';
 		$script = '';
-
-		$lang = isset($tags[0])
-			? strtolower($tags[0])
-			: '';
-
+		$lang = strtolower($tags[0]);
 		if (isset($tags[1]) && $tags[1]) {
 			if (strlen($tags[1]) == 2) {
 				$country = strtolower($tags[1]);
 			}
 		}
-
 		if (isset($tags[2]) && $tags[2]) {
 			$country = strtolower($tags[2]);
 		}
@@ -6165,7 +6156,6 @@ class Otl
 		} else {
 			$langsys = "DFLT";
 		}
-
 		if (strpos($available, $langsys) === false) {
 			if (strpos($available, "DFLT") !== false) {
 				return "DFLT";
@@ -6173,7 +6163,6 @@ class Otl
 				return '';
 			}
 		}
-
 		return $langsys;
 	}
 

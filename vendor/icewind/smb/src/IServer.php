@@ -22,9 +22,15 @@
 namespace Icewind\SMB;
 
 interface IServer {
-	public function getAuth(): IAuth;
+	/**
+	 * @return IAuth
+	 */
+	public function getAuth();
 
-	public function getHost(): string;
+	/**
+	 * @return string
+	 */
+	public function getHost();
 
 	/**
 	 * @return \Icewind\SMB\IShare[]
@@ -32,15 +38,32 @@ interface IServer {
 	 * @throws \Icewind\SMB\Exception\AuthenticationException
 	 * @throws \Icewind\SMB\Exception\InvalidHostException
 	 */
-	public function listShares(): array;
+	public function listShares();
 
-	public function getShare(string $name): IShare;
+	/**
+	 * @param string $name
+	 * @return \Icewind\SMB\IShare
+	 */
+	public function getShare($name);
 
-	public function getTimeZone(): string;
+	/**
+	 * @return string
+	 */
+	public function getTimeZone();
 
-	public function getSystem(): ISystem;
+	/**
+	 * @return ISystem
+	 */
+	public function getSystem();
 
-	public function getOptions(): IOptions;
+	/**
+	 * @return IOptions
+	 */
+	public function getOptions();
 
-	public static function available(ISystem $system): bool;
+	/**
+	 * @param ISystem $system
+	 * @return bool
+	 */
+	public static function available(ISystem $system);
 }

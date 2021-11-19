@@ -117,8 +117,6 @@ class Filesystem
      * @param  string  $path
      * @param  array  $data
      * @return mixed
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function requireOnce($path, array $data = [])
     {
@@ -209,19 +207,6 @@ class Filesystem
         file_put_contents($tempPath, $content);
 
         rename($tempPath, $path);
-    }
-
-    /**
-     * Replace a given string within a given file.
-     *
-     * @param  array|string  $search
-     * @param  array|string  $replace
-     * @param  string  $path
-     * @return void
-     */
-    public function replaceInFile($search, $replace, $path)
-    {
-        file_put_contents($path, str_replace($search, $replace, file_get_contents($path)));
     }
 
     /**
@@ -341,8 +326,6 @@ class Filesystem
      * @param  string  $target
      * @param  string  $link
      * @return void
-     *
-     * @throws \RuntimeException
      */
     public function relativeLink($target, $link)
     {
@@ -406,8 +389,6 @@ class Filesystem
      *
      * @param  string  $path
      * @return string|null
-     *
-     * @throws \RuntimeException
      */
     public function guessExtension($path)
     {

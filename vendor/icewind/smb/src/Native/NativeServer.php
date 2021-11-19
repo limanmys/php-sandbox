@@ -8,13 +8,10 @@
 namespace Icewind\SMB\Native;
 
 use Icewind\SMB\AbstractServer;
-use Icewind\SMB\Exception\AuthenticationException;
-use Icewind\SMB\Exception\InvalidHostException;
 use Icewind\SMB\IAuth;
 use Icewind\SMB\IOptions;
-use Icewind\SMB\IShare;
 use Icewind\SMB\ISystem;
-use Icewind\SMB\ITimeZoneProvider;
+use Icewind\SMB\TimeZoneProvider;
 
 class NativeServer extends AbstractServer {
 	/**
@@ -22,34 +19,38 @@ class NativeServer extends AbstractServer {
 	 */
 	protected $state;
 
-	public function __construct(string $host, IAuth $auth, ISystem $system, ITimeZoneProvider $timeZoneProvider, IOptions $options) {
+	public function __construct($host, IAuth $auth, ISystem $system, TimeZoneProvider $timeZoneProvider, IOptions $options) {
 		parent::__construct($host, $auth, $system, $timeZoneProvider, $options);
 		$this->state = new NativeState();
 	}
 
-	protected function connect(): void {
+	protected function connect() {
 		$this->state->init($this->getAuth(), $this->getOptions());
 	}
 
 	/**
-	 * @return IShare[]
-	 * @throws AuthenticationException
-	 * @throws InvalidHostException
+	 * @return \Icewind\SMB\IShare[]
+	 * @throws \Icewind\SMB\Exception\AuthenticationException
+	 * @throws \Icewind\SMB\Exception\InvalidHostException
 	 */
-	public function listShares(): array {
+	public function listShares() {
 		$this->connect();
 		$shares = [];
 		$dh = $this->state->opendir('smb://' . $this->getHost());
-		while ($share = $this->state->readdir($dh, '')) {
+		while ($share = $this->state->readdir($dh)) {
 			if ($share['type'] === 'file share') {
 				$shares[] = $this->getShare($share['name']);
 			}
 		}
-		$this->state->closedir($dh, '');
+		$this->state->closedir($dh);
 		return $shares;
 	}
 
-	public function getShare(string $name): IShare {
+	/**
+	 * @param string $name
+	 * @return \Icewind\SMB\IShare
+	 */
+	public function getShare($name) {
 		return new NativeShare($this, $name);
 	}
 
@@ -59,7 +60,7 @@ class NativeServer extends AbstractServer {
 	 * @param ISystem $system
 	 * @return bool
 	 */
-	public static function available(ISystem $system): bool {
+	public static function available(ISystem $system) {
 		return $system->libSmbclientAvailable();
 	}
 }

@@ -33,7 +33,6 @@ class BatchRepositoryFake implements BatchRepository
      */
     public function find(string $batchId)
     {
-        //
     }
 
     /**
@@ -69,7 +68,6 @@ class BatchRepositoryFake implements BatchRepository
      */
     public function incrementTotalJobs(string $batchId, int $amount)
     {
-        //
     }
 
     /**
@@ -104,7 +102,6 @@ class BatchRepositoryFake implements BatchRepository
      */
     public function markAsFinished(string $batchId)
     {
-        //
     }
 
     /**
@@ -115,7 +112,6 @@ class BatchRepositoryFake implements BatchRepository
      */
     public function cancel(string $batchId)
     {
-        //
     }
 
     /**
@@ -126,7 +122,6 @@ class BatchRepositoryFake implements BatchRepository
      */
     public function delete(string $batchId)
     {
-        //
     }
 
     /**

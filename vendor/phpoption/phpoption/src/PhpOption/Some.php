@@ -45,17 +45,17 @@ final class Some extends Option
      *
      * @return Some<U>
      */
-    public static function create($value): self
+    public static function create($value)
     {
         return new self($value);
     }
 
-    public function isDefined(): bool
+    public function isDefined()
     {
         return true;
     }
 
-    public function isEmpty(): bool
+    public function isEmpty()
     {
         return false;
     }
@@ -149,7 +149,7 @@ final class Some extends Option
         return $this;
     }
 
-    public function getIterator(): ArrayIterator
+    public function getIterator()
     {
         return new ArrayIterator([$this->value]);
     }

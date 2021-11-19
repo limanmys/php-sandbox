@@ -24,7 +24,6 @@ use RuntimeException;
  * @method static int|string|null id()
  * @method static void login(\Illuminate\Contracts\Auth\Authenticatable $user, bool $remember = false)
  * @method static void logout()
- * @method static void logoutCurrentDevice()
  * @method static void setUser(\Illuminate\Contracts\Auth\Authenticatable $user)
  * @method static void shouldUse(string $name);
  *
@@ -50,8 +49,6 @@ class Auth extends Facade
      *
      * @param  array  $options
      * @return void
-     *
-     * @throws \RuntimeException
      */
     public static function routes(array $options = [])
     {

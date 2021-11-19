@@ -25,32 +25,11 @@ class Options implements IOptions {
 	/** @var int */
 	private $timeout = 20;
 
-	/** @var string|null */
-	private $minProtocol;
-	/** @var string|null */
-	private $maxProtocol;
-
-	public function getTimeout(): int {
+	public function getTimeout() {
 		return $this->timeout;
 	}
 
-	public function setTimeout(int $timeout): void {
+	public function setTimeout($timeout) {
 		$this->timeout = $timeout;
-	}
-
-	public function getMinProtocol(): ?string {
-		return $this->minProtocol;
-	}
-
-	public function setMinProtocol(?string $minProtocol): void {
-		$this->minProtocol = $minProtocol;
-	}
-
-	public function getMaxProtocol(): ?string {
-		return $this->maxProtocol;
-	}
-
-	public function setMaxProtocol(?string $maxProtocol): void {
-		$this->maxProtocol = $maxProtocol;
 	}
 }

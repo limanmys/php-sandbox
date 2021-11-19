@@ -11,7 +11,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
 use League\Flysystem\Adapter\Ftp;
 use League\Flysystem\Adapter\Local as LocalAdapter;
@@ -21,10 +20,8 @@ use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
-use League\Flysystem\Sftp\SftpAdapter as Sftp;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -33,10 +30,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class FilesystemAdapter implements CloudFilesystemContract
 {
-    use Macroable {
-        __call as macroCall;
-    }
-
     /**
      * The Flysystem filesystem implementation.
      *
@@ -59,10 +52,9 @@ class FilesystemAdapter implements CloudFilesystemContract
      * Assert that the given file exists.
      *
      * @param  string|array  $path
-     * @param  string|null  $content
      * @return $this
      */
-    public function assertExists($path, $content = null)
+    public function assertExists($path)
     {
         $paths = Arr::wrap($path);
 
@@ -70,16 +62,6 @@ class FilesystemAdapter implements CloudFilesystemContract
             PHPUnit::assertTrue(
                 $this->exists($path), "Unable to find a file at path [{$path}]."
             );
-
-            if (! is_null($content)) {
-                $actual = $this->get($path);
-
-                PHPUnit::assertSame(
-                    $content,
-                    $actual,
-                    "File [{$path}] was found, but content [{$actual}] does not match [{$content}]."
-                );
-            }
         }
 
         return $this;
@@ -456,7 +438,7 @@ class FilesystemAdapter implements CloudFilesystemContract
             return $this->driver->getUrl($path);
         } elseif ($adapter instanceof AwsS3Adapter) {
             return $this->getAwsUrl($adapter, $path);
-        } elseif ($adapter instanceof Ftp || $adapter instanceof Sftp) {
+        } elseif ($adapter instanceof Ftp) {
             return $this->getFtpUrl($path);
         } elseif ($adapter instanceof LocalAdapter) {
             return $this->getLocalUrl($path);
@@ -599,18 +581,9 @@ class FilesystemAdapter implements CloudFilesystemContract
             'Key' => $adapter->getPathPrefix().$path,
         ], $options));
 
-        $uri = $client->createPresignedRequest(
+        return (string) $client->createPresignedRequest(
             $command, $expiration
         )->getUri();
-
-        // If an explicit base URL has been set on the disk configuration then we will use
-        // it as the base URL instead of the default path. This allows the developer to
-        // have full control over the base path for this filesystem's generated URLs.
-        if (! is_null($url = $this->driver->getConfig()->get('temporary_url'))) {
-            $uri = $this->replaceBaseUrl($uri, $url);
-        }
-
-        return (string) $uri;
     }
 
     /**
@@ -626,23 +599,6 @@ class FilesystemAdapter implements CloudFilesystemContract
     }
 
     /**
-     * Replace the scheme, host and port of the given UriInterface with values from the given URL.
-     *
-     * @param  \Psr\Http\Message\UriInterface  $uri
-     * @param  string  $url
-     * @return \Psr\Http\Message\UriInterface
-     */
-    protected function replaceBaseUrl($uri, $url)
-    {
-        $parsed = parse_url($url);
-
-        return $uri
-            ->withScheme($parsed['scheme'])
-            ->withHost($parsed['host'])
-            ->withPort($parsed['port'] ?? null);
-    }
-
-    /**
      * Get an array of all files in a directory.
      *
      * @param  string|null  $directory
@@ -651,7 +607,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function files($directory = null, $recursive = false)
     {
-        $contents = $this->driver->listContents($directory ?? '', $recursive);
+        $contents = $this->driver->listContents($directory, $recursive);
 
         return $this->filterContentsByType($contents, 'file');
     }
@@ -676,7 +632,7 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function directories($directory = null, $recursive = false)
     {
-        $contents = $this->driver->listContents($directory ?? '', $recursive);
+        $contents = $this->driver->listContents($directory, $recursive);
 
         return $this->filterContentsByType($contents, 'dir');
     }
@@ -789,10 +745,6 @@ class FilesystemAdapter implements CloudFilesystemContract
      */
     public function __call($method, array $parameters)
     {
-        if (static::hasMacro($method)) {
-            return $this->macroCall($method, $parameters);
-        }
-
         return $this->driver->{$method}(...array_values($parameters));
     }
 }

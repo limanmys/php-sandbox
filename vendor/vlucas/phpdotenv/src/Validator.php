@@ -161,7 +161,7 @@ class Validator
      *
      * @return \Dotenv\Validator
      */
-    public function assert(callable $callback, string $message)
+    private function assert(callable $callback, string $message)
     {
         $failing = [];
 
@@ -193,7 +193,7 @@ class Validator
      *
      * @return \Dotenv\Validator
      */
-    public function assertNullable(callable $callback, string $message)
+    private function assertNullable(callable $callback, string $message)
     {
         return $this->assert(
             static function (?string $value) use ($callback) {

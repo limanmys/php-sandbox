@@ -37,7 +37,7 @@ If you want to use TCPDF, you have to update your composer.json to:
 ```json
 {
     "require": {
-        "tecnickcom/tcpdf": "6.3.*",
+        "tecnickcom/tcpdf": "6.2.*",
         "setasign/fpdi": "^2.0"
     }
 }

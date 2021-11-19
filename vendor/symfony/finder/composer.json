@@ -1,7 +1,7 @@
 {
     "name": "symfony/finder",
     "type": "library",
-    "description": "Finds files and directories via an intuitive fluent interface",
+    "description": "Symfony Finder Component",
     "keywords": [],
     "homepage": "https://symfony.com",
     "license": "MIT",
@@ -16,8 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
-        "symfony/polyfill-php80": "^1.16"
+        "php": ">=7.2.5"
     },
     "autoload": {
         "psr-4": { "Symfony\\Component\\Finder\\": "" },

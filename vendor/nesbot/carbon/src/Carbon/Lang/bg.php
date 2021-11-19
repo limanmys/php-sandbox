@@ -17,9 +17,6 @@
  * - JD Isaacks
  * - Glavić
  */
-
-use Carbon\CarbonInterface;
-
 return [
     'year' => ':count година|:count години',
     'a_year' => 'година|:count години',
@@ -66,7 +63,7 @@ return [
         'nextDay' => '[Утре в] LT',
         'nextWeek' => 'dddd [в] LT',
         'lastDay' => '[Вчера в] LT',
-        'lastWeek' => function (CarbonInterface $current) {
+        'lastWeek' => function (\Carbon\CarbonInterface $current) {
             switch ($current->dayOfWeek) {
                 case 0:
                 case 3:

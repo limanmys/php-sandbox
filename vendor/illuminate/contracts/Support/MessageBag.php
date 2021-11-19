@@ -2,9 +2,7 @@
 
 namespace Illuminate\Contracts\Support;
 
-use Countable;
-
-interface MessageBag extends Arrayable, Countable
+interface MessageBag extends Arrayable
 {
     /**
      * Get the keys present in the message bag.
@@ -99,4 +97,11 @@ interface MessageBag extends Arrayable, Countable
      * @return bool
      */
     public function isNotEmpty();
+
+    /**
+     * Get the number of messages in the container.
+     *
+     * @return int
+     */
+    public function count();
 }

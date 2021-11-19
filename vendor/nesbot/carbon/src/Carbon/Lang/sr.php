@@ -19,9 +19,6 @@
  * - Glavić
  * - Milos Sakovic
  */
-
-use Carbon\CarbonInterface;
-
 return [
     'year' => ':count godina|:count godine|:count godina',
     'y' => ':count g.',
@@ -67,7 +64,7 @@ return [
     'calendar' => [
         'sameDay' => '[danas u] LT',
         'nextDay' => '[sutra u] LT',
-        'nextWeek' => function (CarbonInterface $date) {
+        'nextWeek' => function (\Carbon\CarbonInterface $date) {
             switch ($date->dayOfWeek) {
                 case 0:
                     return '[u nedelju u] LT';
@@ -80,7 +77,7 @@ return [
             }
         },
         'lastDay' => '[juče u] LT',
-        'lastWeek' => function (CarbonInterface $date) {
+        'lastWeek' => function (\Carbon\CarbonInterface $date) {
             switch ($date->dayOfWeek) {
                 case 0:
                     return '[prošle nedelje u] LT';

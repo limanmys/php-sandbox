@@ -54,7 +54,7 @@ trait FormatsMessages
         // messages out of the translator service for this validation rule.
         $key = "validation.{$lowerRule}";
 
-        if ($key !== ($value = $this->translator->get($key))) {
+        if ($key != ($value = $this->translator->get($key))) {
             return $value;
         }
 
@@ -116,7 +116,7 @@ trait FormatsMessages
     }
 
     /**
-     * Get the custom error message from the translator.
+     * Get the custom error message from translator.
      *
      * @param  string  $key
      * @return string
@@ -336,11 +336,7 @@ trait FormatsMessages
             return $value ? 'true' : 'false';
         }
 
-        if (is_null($value)) {
-            return 'empty';
-        }
-
-        return (string) $value;
+        return $value;
     }
 
     /**

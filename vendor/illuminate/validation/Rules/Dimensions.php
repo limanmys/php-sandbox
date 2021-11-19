@@ -2,12 +2,8 @@
 
 namespace Illuminate\Validation\Rules;
 
-use Illuminate\Support\Traits\Conditionable;
-
 class Dimensions
 {
-    use Conditionable;
-
     /**
      * The constraints for the dimensions rule.
      *
@@ -18,7 +14,7 @@ class Dimensions
     /**
      * Create a new dimensions rule instance.
      *
-     * @param  array  $constraints
+     * @param  array  $constraints;
      * @return void
      */
     public function __construct(array $constraints = [])

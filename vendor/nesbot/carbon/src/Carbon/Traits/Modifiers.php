@@ -8,11 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Carbon\Traits;
 
 use Carbon\CarbonInterface;
-use ReturnTypeWillChange;
 
 /**
  * Trait Modifiers.
@@ -225,11 +223,11 @@ trait Modifiers
      */
     public function nthOfMonth($nth, $dayOfWeek)
     {
-        $date = $this->avoidMutation()->firstOfMonth();
+        $date = $this->copy()->firstOfMonth();
         $check = $date->rawFormat('Y-m');
         $date = $date->modify('+'.$nth.' '.static::$days[$dayOfWeek]);
 
-        return $date->rawFormat('Y-m') === $check ? $this->modify((string) $date) : false;
+        return $date->rawFormat('Y-m') === $check ? $this->modify("$date") : false;
     }
 
     /**
@@ -275,12 +273,12 @@ trait Modifiers
      */
     public function nthOfQuarter($nth, $dayOfWeek)
     {
-        $date = $this->avoidMutation()->day(1)->month($this->quarter * static::MONTHS_PER_QUARTER);
+        $date = $this->copy()->day(1)->month($this->quarter * static::MONTHS_PER_QUARTER);
         $lastMonth = $date->month;
         $year = $date->year;
         $date = $date->firstOfQuarter()->modify('+'.$nth.' '.static::$days[$dayOfWeek]);
 
-        return ($lastMonth < $date->month || $year !== $date->year) ? false : $this->modify((string) $date);
+        return ($lastMonth < $date->month || $year !== $date->year) ? false : $this->modify("$date");
     }
 
     /**
@@ -326,9 +324,9 @@ trait Modifiers
      */
     public function nthOfYear($nth, $dayOfWeek)
     {
-        $date = $this->avoidMutation()->firstOfYear()->modify('+'.$nth.' '.static::$days[$dayOfWeek]);
+        $date = $this->copy()->firstOfYear()->modify('+'.$nth.' '.static::$days[$dayOfWeek]);
 
-        return $this->year === $date->year ? $this->modify((string) $date) : false;
+        return $this->year === $date->year ? $this->modify("$date") : false;
     }
 
     /**
@@ -430,10 +428,7 @@ trait Modifiers
      * Calls \DateTime::modify if mutable or \DateTimeImmutable::modify else.
      *
      * @see https://php.net/manual/en/datetime.modify.php
-     *
-     * @return static|false
      */
-    #[ReturnTypeWillChange]
     public function modify($modify)
     {
         return parent::modify((string) $modify);
@@ -457,7 +452,7 @@ trait Modifiers
     {
         return $this->modify(preg_replace_callback('/^(next|previous|last)\s+(\d{1,2}(h|am|pm|:\d{1,2}(:\d{1,2})?))$/i', function ($match) {
             $match[2] = str_replace('h', ':00', $match[2]);
-            $test = $this->avoidMutation()->modify($match[2]);
+            $test = $this->copy()->modify($match[2]);
             $method = $match[1] === 'next' ? 'lt' : 'gt';
             $match[1] = $test->$method($this) ? $match[1].' day' : 'today';
 

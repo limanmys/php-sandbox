@@ -39,7 +39,7 @@ class Composer
      * Regenerate the Composer autoloader files.
      *
      * @param  string|array  $extra
-     * @return int
+     * @return void
      */
     public function dumpAutoloads($extra = '')
     {
@@ -47,17 +47,17 @@ class Composer
 
         $command = array_merge($this->findComposer(), ['dump-autoload'], $extra);
 
-        return $this->getProcess($command)->run();
+        $this->getProcess($command)->run();
     }
 
     /**
      * Regenerate the optimized Composer autoloader files.
      *
-     * @return int
+     * @return void
      */
     public function dumpOptimized()
     {
-        return $this->dumpAutoloads('--optimize');
+        $this->dumpAutoloads('--optimize');
     }
 
     /**

@@ -10,7 +10,7 @@ namespace Icewind\SMB;
 use Icewind\SMB\Exception\Exception;
 
 class System implements ISystem {
-	/** @var (string|null)[] */
+	/** @var (string|bool)[] */
 	private $paths = [];
 
 	/**
@@ -20,7 +20,7 @@ class System implements ISystem {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function getFD(int $num): string {
+	public function getFD($num) {
 		$folders = [
 			'/proc/self/fd',
 			'/dev/fd'
@@ -33,36 +33,36 @@ class System implements ISystem {
 		throw new Exception('Cant find file descriptor path');
 	}
 
-	public function getSmbclientPath(): ?string {
+	public function getSmbclientPath() {
 		return $this->getBinaryPath('smbclient');
 	}
 
-	public function getNetPath(): ?string {
+	public function getNetPath() {
 		return $this->getBinaryPath('net');
 	}
 
-	public function getSmbcAclsPath(): ?string {
+	public function getSmbcAclsPath() {
 		return $this->getBinaryPath('smbcacls');
 	}
 
-	public function getStdBufPath(): ?string {
+	public function getStdBufPath() {
 		return $this->getBinaryPath('stdbuf');
 	}
 
-	public function getDatePath(): ?string {
+	public function getDatePath() {
 		return $this->getBinaryPath('date');
 	}
 
-	public function libSmbclientAvailable(): bool {
+	public function libSmbclientAvailable() {
 		return function_exists('smbclient_state_new');
 	}
 
-	protected function getBinaryPath(string $binary): ?string {
+	protected function getBinaryPath($binary) {
 		if (!isset($this->paths[$binary])) {
 			$result = null;
 			$output = [];
 			exec("which $binary 2>&1", $output, $result);
-			$this->paths[$binary] = $result === 0 && isset($output[0]) ? (string)$output[0] : null;
+			$this->paths[$binary] = $result === 0 ? trim(implode('', $output)) : false;
 		}
 		return $this->paths[$binary];
 	}

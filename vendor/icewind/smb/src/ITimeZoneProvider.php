@@ -28,5 +28,5 @@ interface ITimeZoneProvider {
 	 * @param string $host
 	 * @return string
 	 */
-	public function get(string $host): string;
+	public function get($host);
 }

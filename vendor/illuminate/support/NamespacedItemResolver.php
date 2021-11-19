@@ -99,14 +99,4 @@ class NamespacedItemResolver
     {
         $this->parsed[$key] = $parsed;
     }
-
-    /**
-     * Flush the cache of parsed keys.
-     *
-     * @return void
-     */
-    public function flushParsedKeys()
-    {
-        $this->parsed = [];
-    }
 }
