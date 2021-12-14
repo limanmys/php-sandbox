@@ -297,7 +297,7 @@ function getJobList($function_name)
 function publicPath($path)
 {
     global $limanData;
-    return $limanData["publicPath"] . base64_encode($path);
+    return $limanData["publicPath"] . $path;
 }
 
 function getLicense() {
