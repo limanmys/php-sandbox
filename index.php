@@ -384,17 +384,6 @@ function openTunnel($remote_host, $remote_port, $username, $password)
     ]);
 }
 
-function openUnixSocket($remote_host, $remote_port, $username, $password, $socket_file)
-{
-    return renderEngineRequest('','openUnixSocket',[
-        "remote_host" => $remote_host,
-        "remote_port" => $remote_port,
-        "username" => $username,
-        "password" => $password,
-        "socket_file" => $socket_file
-    ]);
-}
-
 function keepTunnelAlive($remote_host,$remote_port,$username)
 {
     return renderEngineRequest('','keepTunnelAlive',[
