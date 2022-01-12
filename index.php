@@ -48,9 +48,28 @@ function setHandler()
     set_error_handler('customErrorHandler');
 }
 
-function extensionDb($target)
+function extensionDb($target, $set = null)
 {
     global $limanData;
+    if ($set) {
+        $global = false;
+        $writable = false;
+        
+        foreach (extension()["database"] as $db) {
+            if ($db["variable"] == $target) {
+                $global = isset($db["global"]) ? $db["global"] : false;
+                $writable = isset($db["writable"]) ? $db["writable"] : false;
+                break;
+            } 
+        }
+        return renderEngineRequest('','setExtensionDb',[
+            "target" => $target,
+            "new_param" => $set,
+            "global" => $global,
+            "writable" => $writable,
+            "user_id" => user()->id
+        ]);
+    }
     return $limanData["settings"][$target];
 }
 
