@@ -52,22 +52,11 @@ function extensionDb($target, $set = null)
 {
     global $limanData;
     if ($set) {
-        $global = false;
-        $writable = false;
-        
-        foreach (extension()["database"] as $db) {
-            if ($db["variable"] == $target) {
-                $global = isset($db["global"]) ? $db["global"] : false;
-                $writable = isset($db["writable"]) ? $db["writable"] : false;
-                break;
-            } 
-        }
+        $limanData["settings"][$target] = $set;
+
         return renderEngineRequest('','setExtensionDb',[
             "target" => $target,
-            "new_param" => $set,
-            "global" => $global,
-            "writable" => $writable,
-            "user_id" => user()->id
+            "new_param" => $set
         ]);
     }
     return $limanData["settings"][$target];
