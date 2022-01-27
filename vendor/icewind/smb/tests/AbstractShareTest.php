@@ -8,16 +8,25 @@
 namespace Icewind\SMB\Test;
 
 use Icewind\SMB\ACL;
+use Icewind\SMB\BasicAuth;
+use Icewind\SMB\Exception\AccessDeniedException;
 use Icewind\SMB\Exception\AlreadyExistsException;
+use Icewind\SMB\Exception\ConnectException;
+use Icewind\SMB\Exception\ConnectionException;
+use Icewind\SMB\Exception\ConnectionRefusedException;
 use Icewind\SMB\Exception\FileInUseException;
+use Icewind\SMB\Exception\ForbiddenException;
 use Icewind\SMB\Exception\InvalidPathException;
 use Icewind\SMB\Exception\InvalidResourceException;
 use Icewind\SMB\Exception\InvalidTypeException;
 use Icewind\SMB\Exception\NotEmptyException;
 use Icewind\SMB\Exception\NotFoundException;
-use Icewind\SMB\FileInfo;
 use Icewind\SMB\IFileInfo;
+use Icewind\SMB\IOptions;
 use Icewind\SMB\IShare;
+use Icewind\SMB\Options;
+use Icewind\SMB\System;
+use Icewind\SMB\TimeZoneProvider;
 
 abstract class AbstractShareTest extends TestCase {
 	/**
@@ -36,6 +45,36 @@ abstract class AbstractShareTest extends TestCase {
 	protected $root;
 
 	protected $config;
+
+	abstract public function getServerClass(): string;
+
+	public function setUp(): void {
+//		ob_end_flush();
+//		var_dump($this->getName());
+		$this->config = json_decode(file_get_contents(__DIR__ . '/config.json'));
+		$options = new Options();
+		$options->setMinProtocol(IOptions::PROTOCOL_SMB2);
+		$options->setMaxProtocol(IOptions::PROTOCOL_SMB3);
+		$serverClass = $this->getServerClass();
+		$this->server = new $serverClass(
+			$this->config->host,
+			new BasicAuth(
+				$this->config->user,
+				'test',
+				$this->config->password
+			),
+			new System(),
+			new TimeZoneProvider(new System()),
+			$options
+		);
+		$this->share = $this->server->getShare($this->config->share);
+		if ($this->config->root) {
+			$this->root = '/' . $this->config->root . '/' . uniqid();
+		} else {
+			$this->root = '/' . uniqid();
+		}
+		$this->share->mkdir($this->root);
+	}
 
 	public function tearDown(): void {
 		try {
@@ -352,10 +391,14 @@ abstract class AbstractShareTest extends TestCase {
 	}
 
 	public function testRmdirNotEmpty() {
-		$this->expectException(NotEmptyException::class);
 		$this->share->mkdir($this->root . '/foobar');
 		$this->share->put($this->getTextFile(), $this->root . '/foobar/asd');
-		$this->share->rmdir($this->root . '/foobar');
+		try {
+			$this->share->rmdir($this->root . '/foobar');
+			$this->markTestSkipped("Old client versions don't throw this error");
+		} catch (NotEmptyException $e) {
+			$this->assertTrue(true);
+		}
 	}
 
 	/**
@@ -701,6 +744,10 @@ abstract class AbstractShareTest extends TestCase {
 	}
 
 	public function testDirACL() {
+		$system = new System();
+		if ($system->getSmbcAclsPath() === null) {
+			$this->markTestSkipped("smbcacls not installed");
+		}
 		$this->share->mkdir($this->root . "/test");
 		$listing = $this->share->dir($this->root);
 
@@ -712,6 +759,10 @@ abstract class AbstractShareTest extends TestCase {
 	}
 
 	public function testStatACL() {
+		$system = new System();
+		if ($system->getSmbcAclsPath() === null) {
+			$this->markTestSkipped("smbcacls not installed");
+		}
 		$this->share->mkdir($this->root . "/test");
 		$info = $this->share->stat($this->root);
 
@@ -719,5 +770,29 @@ abstract class AbstractShareTest extends TestCase {
 		$acl = $acls['Everyone'];
 		$this->assertEquals($acl->getType(), ACL::TYPE_ALLOW);
 		$this->assertEquals(ACL::MASK_READ, $acl->getMask() & ACL::MASK_READ);
+	}
+
+	public function testWrongUserName() {
+		$serverClass = $this->getServerClass();
+		$server = new $serverClass(
+			$this->config->host,
+			new BasicAuth(
+				uniqid(),
+				'test',
+				uniqid()
+			),
+			new System(),
+			new TimeZoneProvider(new System()),
+			new Options()
+		);
+		try {
+			$share = $server->getShare($this->config->share);
+			$share->dir("");
+			$this->fail("Expected exception");
+		} catch (ForbiddenException $e) {
+			$this->assertTrue(true);
+		} catch (ConnectException $e) {
+			$this->assertTrue(true);
+		}
 	}
 }
