@@ -764,6 +764,36 @@ class CarbonPeriod implements Iterator, Countable, JsonSerializable
     }
 
     /**
+     * Get a property allowing both `DatePeriod` snakeCase and camelCase names.
+     *
+     * @param string $name
+     *
+     * @return bool|CarbonInterface|CarbonInterval|int|null
+     */
+    public function get(string $name)
+    {
+        $getter = $this->getGetter($name);
+
+        if ($getter) {
+            return $getter();
+        }
+
+        throw new UnknownGetterException($name);
+    }
+
+    /**
+     * Get a property allowing both `DatePeriod` snakeCase and camelCase names.
+     *
+     * @param string $name
+     *
+     * @return bool|CarbonInterface|CarbonInterval|int|null
+     */
+    public function __get(string $name)
+    {
+        return $this->get($name);
+    }
+
+    /**
      * Check if an attribute exists on the object
      *
      * @param string $name

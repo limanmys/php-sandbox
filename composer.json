@@ -10,7 +10,7 @@
     "larapack/dd": "^1.1",
     "phpseclib/phpseclib": "~2.0",
     "guzzlehttp/guzzle": "^6.3",
-    "ext-json" : "*",
+    "ext-json": "*",
     "catfan/medoo": "^1.6",
     "ext-openssl": "*",
     "icewind/smb": "^3.1",

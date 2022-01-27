@@ -63,6 +63,21 @@ trait Test
         static::$testNow = \is_string($testNow) ? static::parse($testNow) : $testNow;
     }
 
+    public static function setTestNowAndTimezone($testNow = null, $tz = null)
+    {
+        $useDateInstanceTimezone = $testNow instanceof DateTimeInterface;
+
+        if ($useDateInstanceTimezone) {
+            date_default_timezone_set($testNow->getTimezone()->getName());
+        }
+
+        static::setTestNow($testNow);
+
+        if (!$useDateInstanceTimezone) {
+            date_default_timezone_set(static::getMockedTestNow(\func_num_args() === 1 ? null : $tz)->timezone);
+        }
+    }
+
     /**
      * Set a Carbon instance (real or mock) to be returned when a "now"
      * instance is created.  The provided instance will be returned

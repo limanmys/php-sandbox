@@ -813,7 +813,7 @@ class Stringable implements JsonSerializable
     }
 
     /**
-     * Execute the given callback if the string is empty.
+     * Execute the given callback if the string is not empty.
      *
      * @param  callable  $callback
      * @param  callable|null  $default
