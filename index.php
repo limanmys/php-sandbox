@@ -48,9 +48,17 @@ function setHandler()
     set_error_handler('customErrorHandler');
 }
 
-function extensionDb($target)
+function extensionDb($target, $set = null)
 {
     global $limanData;
+    if ($set) {
+        $limanData["settings"][$target] = $set;
+
+        return renderEngineRequest('','setExtensionDb',[
+            "target" => $target,
+            "new_param" => $set
+        ]);
+    }
     return $limanData["settings"][$target];
 }
 
@@ -297,7 +305,7 @@ function getJobList($function_name)
 function publicPath($path)
 {
     global $limanData;
-    return $limanData["publicPath"] . base64_encode($path);
+    return $limanData["publicPath"] . $path;
 }
 
 function getLicense() {
@@ -308,7 +316,7 @@ function getLicense() {
 function runCommand($command)
 {
     return renderEngineRequest('','runCommand',[
-        "command" => $command.((substr($command, -1)) !== ";" ? ";" : "")." echo 1 2>/dev/null 1>/dev/null;"
+        "command" => $command
     ]);
 }
 
@@ -360,8 +368,7 @@ function sudo()
     if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
     } else if ($limanData["key_type"] == "ssh"){
-        $pass64 = base64_encode(extensionDb("clientPassword")."\n");
-        return 'echo ' . $pass64 .' | base64 -d | sudo -S -p " " id 2>/dev/null 1>/dev/null; sudo ';
+        return 'sudo -p "liman-pass-sudo" ';
     }
     return "";
 }

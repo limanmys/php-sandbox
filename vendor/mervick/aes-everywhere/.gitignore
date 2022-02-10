@@ -1,8 +1,0 @@
-vendor/
-node_modules/
-.idea/
-composer.lock
-npm-debug.log
-ignore
-*.pyc
-gs-maven.iml
