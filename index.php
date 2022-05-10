@@ -441,6 +441,16 @@ function sendNotification($title,$message, $type = "notify")
     ]);
 }
 
+function sendMail($to, $subject, $content, array $attachments=[])
+{
+    return limanInternalRequest('sendMail',[
+        "to" => $to,
+        "subject" => $subject,
+        "content" => base64_encode($content),
+        "attachments" => json_encode($attachments),
+    ]);
+}
+
 function sendLog($title,$message,$data=[])
 {
     global $limanData;
