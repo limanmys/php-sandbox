@@ -365,12 +365,11 @@ function serverHasKey()
 function sudo()
 {
     global $limanData;
+
     if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
-    } else if ($limanData["key_type"] == "ssh"){
-        return 'sudo -p "liman-pass-sudo" ';
-    }
-    return "";
+    } 
+    return 'sudo -p "liman-pass-sudo" ';
 }
 
 
