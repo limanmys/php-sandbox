@@ -365,12 +365,11 @@ function serverHasKey()
 function sudo()
 {
     global $limanData;
+
     if($limanData["key_type"] == "ssh_certificate"){
         return "sudo ";
-    } else if ($limanData["key_type"] == "ssh"){
-        return 'sudo -p "liman-pass-sudo" ';
-    }
-    return "";
+    } 
+    return 'sudo -p "liman-pass-sudo" ';
 }
 
 
@@ -438,6 +437,16 @@ function sendNotification($title,$message, $type = "notify")
         "title" => $title,
         "message" => $message,
         "type" => $type
+    ]);
+}
+
+function sendMail($to, $subject, $content, array $attachments=[])
+{
+    return limanInternalRequest('sendMail',[
+        "to" => $to,
+        "subject" => $subject,
+        "content" => base64_encode($content),
+        "attachments" => json_encode($attachments),
     ]);
 }
 

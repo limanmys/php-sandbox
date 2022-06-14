@@ -9,7 +9,7 @@
     "jenssegers/blade": "^1.4",
     "larapack/dd": "^1.1",
     "phpseclib/phpseclib": "~2.0",
-    "guzzlehttp/guzzle": "^6.3",
+    "guzzlehttp/guzzle": "^7.4",
     "ext-json": "*",
     "catfan/medoo": "^1.6",
     "ext-openssl": "*",
