@@ -337,7 +337,7 @@ function putFile($localPath, $remotePath)
     ]);
 }
 
-function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command)
+function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command, $disconnect = false)
 {
     return renderEngineRequest('','runOutsideCommand',[
         "connection_type" => $connectionType,
@@ -345,7 +345,8 @@ function executeOutsideCommand($connectionType, $username,$password,$remote_host
         "password" => $password,
         "remote_host" => $remote_host,
         "remote_port" => $remote_port,
-        "command" => $command
+        "command" => $command,
+        "disconnect" => $disconnect
     ]);
 }
 
