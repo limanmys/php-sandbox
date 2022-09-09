@@ -154,7 +154,7 @@ function request($target = null)
 
 function API($target)
 {
-    return "/extensionRun/" . $target;
+    return "/engine/" . $target;
 }
 
 function getToken()
@@ -282,7 +282,7 @@ function renderEngineRequest($function,$url,$parameters = [], $server_id = null,
     $parameters["lmntargetFunction"] = $function;
 
     try {
-        $response = $client->request('POST', "https://127.0.0.1:5454/$url", [
+        $response = $client->request('POST', "https://127.0.0.1:2806/$url", [
             "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
@@ -315,14 +315,14 @@ function getLicense() {
 
 function runCommand($command)
 {
-    return renderEngineRequest('','runCommand',[
+    return renderEngineRequest('','command',[
         "command" => $command
     ]);
 }
 
 function runScript($name,$parameters = " ",$sudo = true)
 {
-    return renderEngineRequest('','runScript',[
+    return renderEngineRequest('','script',[
         "local_path" => getPath("scripts/$name"),
         "root" => $sudo ? "yes" : "no",
         "parameters" => trim($parameters) ? $parameters : " "
@@ -339,7 +339,7 @@ function putFile($localPath, $remotePath)
 
 function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command, $disconnect = false)
 {
-    return renderEngineRequest('','runOutsideCommand',[
+    return renderEngineRequest('','outsideCommand',[
         "connection_type" => $connectionType,
         "username" => $username,
         "password" => $password,
