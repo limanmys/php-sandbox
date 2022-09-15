@@ -59,7 +59,11 @@ function extensionDb($target, $set = null)
             "new_param" => $set
         ]);
     }
-    return $limanData["settings"][$target];
+
+    if (isset($limanData["settings"][$target])) {
+        return $limanData["settings"][$target];
+    }
+    return "";
 }
 
 function extension()
@@ -291,7 +295,7 @@ function renderEngineRequest($function,$url,$parameters = [], $server_id = null,
     }
 }
 
-function externalAPI($target, $target_extension_name, $target_server_id,  $params = [])
+function externalAPI($target, $target_extension_name, $target_server_id, $params = [])
 {
     return renderEngineRequest($target,"externalAPI",$params, $target_server_id,$target_extension_name);
 }
