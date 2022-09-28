@@ -420,10 +420,11 @@ function getPath($filename = null)
 function getVariable($key)
 {
     global $limanData;
-    if(array_key_exists("variables",$limanData)){
+
+    if(isset($limanData["variables"]) && isset($limanData["variables"][$key])){
         return $limanData["variables"][$key];
     }else{
-        return null;
+        return "";
     }
 }
 
