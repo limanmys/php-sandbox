@@ -147,10 +147,10 @@ function request($target = null)
     global $limanData;
     $tempRequest = $limanData["requestData"];
     if ($target) {
-        if (array_key_exists($target, $tempRequest)) {
+        if (isset($tempRequest[$target])) {
             return html_entity_decode($tempRequest[$target]);
         } else {
-            return null;
+            return "";
         }
     }
     return $tempRequest;
