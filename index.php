@@ -386,13 +386,14 @@ function getFile($localPath, $remotePath)
     ]);
 }
 
-function openTunnel($remote_host, $remote_port, $username, $password)
+function openTunnel($remote_host, $socket_port, $username, $password, $ssh_port = 22)
 {
     return renderEngineRequest('','openTunnel',[
         "remote_host" => $remote_host,
-        "remote_port" => $remote_port,
+        "remote_port" => $socket_port,
         "username" => $username,
-        "password" => $password
+        "password" => $password,
+        "ssh_port" => $ssh_port,
     ]);
 }
 
