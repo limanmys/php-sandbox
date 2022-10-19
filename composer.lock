@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8615d58d1388e9fbb4163d6e0403fb93",
+    "content-hash": "4d64336196c1747fcc66e0f63155428d",
     "packages": [
         {
             "name": "beebmx/blade",
@@ -775,98 +775,6 @@
                 }
             ],
             "time": "2022-08-28T14:45:39+00:00"
-        },
-        {
-            "name": "icewind/smb",
-            "version": "v3.5.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/icewind1991/SMB.git",
-                "reference": "76995aa11c14e39bccd0f2370ed63b2f8f623a6d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/icewind1991/SMB/zipball/76995aa11c14e39bccd0f2370ed63b2f8f623a6d",
-                "reference": "76995aa11c14e39bccd0f2370ed63b2f8f623a6d",
-                "shasum": ""
-            },
-            "require": {
-                "icewind/streams": ">=0.7.3",
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.16",
-                "phpstan/phpstan": "^0.12.57",
-                "phpunit/phpunit": "^8.5|^9.3.8",
-                "psalm/phar": "^4.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Icewind\\SMB\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Robin Appelman",
-                    "email": "icewind@owncloud.com"
-                }
-            ],
-            "description": "php wrapper for smbclient and libsmbclient-php",
-            "support": {
-                "issues": "https://github.com/icewind1991/SMB/issues",
-                "source": "https://github.com/icewind1991/SMB/tree/v3.5.4"
-            },
-            "time": "2022-05-30T15:18:19+00:00"
-        },
-        {
-            "name": "icewind/streams",
-            "version": "v0.7.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/icewind1991/Streams.git",
-                "reference": "6e347e48d44cf9759cb6c98faab4e8ffd2f5a288"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/icewind1991/Streams/zipball/6e347e48d44cf9759cb6c98faab4e8ffd2f5a288",
-                "reference": "6e347e48d44cf9759cb6c98faab4e8ffd2f5a288",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2",
-                "phpstan/phpstan": "^0.12",
-                "phpunit/phpunit": "^9"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Icewind\\Streams\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Robin Appelman",
-                    "email": "icewind@owncloud.com"
-                }
-            ],
-            "description": "A set of generic stream wrappers",
-            "support": {
-                "issues": "https://github.com/icewind1991/Streams/issues",
-                "source": "https://github.com/icewind1991/Streams/tree/v0.7.6"
-            },
-            "time": "2022-06-09T13:47:06+00:00"
         },
         {
             "name": "illuminate/bus",

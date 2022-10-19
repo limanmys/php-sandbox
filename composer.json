@@ -12,7 +12,6 @@
     "ext-json": "*",
     "catfan/medoo": "^2.1.7",
     "ext-openssl": "*",
-    "icewind/smb": "^3.5",
     "mpdf/mpdf": "^8.1",
     "ext-ldap": "*",
     "mervick/aes-everywhere": "^1.1",
