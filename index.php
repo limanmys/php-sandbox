@@ -147,10 +147,10 @@ function request($target = null)
     global $limanData;
     $tempRequest = $limanData["requestData"];
     if ($target) {
-        if (array_key_exists($target, $tempRequest)) {
+        if (isset($tempRequest[$target])) {
             return html_entity_decode($tempRequest[$target]);
         } else {
-            return null;
+            return "";
         }
     }
     return $tempRequest;
@@ -386,13 +386,14 @@ function getFile($localPath, $remotePath)
     ]);
 }
 
-function openTunnel($remote_host, $remote_port, $username, $password)
+function openTunnel($remote_host, $socket_port, $username, $password, $ssh_port = 22)
 {
     return renderEngineRequest('','openTunnel',[
         "remote_host" => $remote_host,
-        "remote_port" => $remote_port,
+        "remote_port" => $socket_port,
         "username" => $username,
-        "password" => $password
+        "password" => $password,
+        "ssh_port" => $ssh_port,
     ]);
 }
 
@@ -420,10 +421,11 @@ function getPath($filename = null)
 function getVariable($key)
 {
     global $limanData;
-    if(array_key_exists("variables",$limanData)){
+
+    if(isset($limanData["variables"]) && isset($limanData["variables"][$key])){
         return $limanData["variables"][$key];
     }else{
-        return null;
+        return "";
     }
 }
 
