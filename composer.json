@@ -17,6 +17,6 @@
     "mervick/aes-everywhere": "^1.1",
     "laravel/helpers": "^1.5",
     "beebmx/blade": "^1.5",
-    "spatie/ignition": "^1.4"
+    "limanmys/php-smb": "^3.5"
   }
 }
