@@ -2,7 +2,7 @@
 ob_start();
 require_once(__DIR__ . "/vendor/autoload.php");
 
-use Jenssegers\Blade\Blade;
+use Beebmx\Blade\Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use mervick\aesEverywhere\AES256;
 use Liman\Toolkit\RemoteTask\TaskManager;
 
-function customErrorHandler($exception, $err_str = null)
+function customErrorHandler($exception, $err_str = null, $errfile = null, $errline = null)
 {
     if ($err_str) {
         if ($exception == 8) {
