@@ -502,6 +502,18 @@ function checkTask()
     return respond(TaskManager::get($taskName, $attributes)->check());
 }
 
+function download($path)
+{
+    global $limanData;
+    $object = [
+        "server_id" => server()->id,
+        "extension_id" => $limanData["extension"]["id"],
+        "token" => $limanData["token"],
+        "path" => $path
+    ];
+    return "/engine/download/?" . http_build_query($object);
+}
+
 if (is_file($limanData["functionsPath"])) {
     include($limanData["functionsPath"]);
 }
