@@ -59,7 +59,11 @@ function extensionDb($target, $set = null)
             "new_param" => $set
         ]);
     }
-    return $limanData["settings"][$target];
+
+    if (isset($limanData["settings"][$target])) {
+        return $limanData["settings"][$target];
+    }
+    return "";
 }
 
 function extension()
@@ -143,10 +147,10 @@ function request($target = null)
     global $limanData;
     $tempRequest = $limanData["requestData"];
     if ($target) {
-        if (array_key_exists($target, $tempRequest)) {
+        if (isset($tempRequest[$target])) {
             return html_entity_decode($tempRequest[$target]);
         } else {
-            return null;
+            return "";
         }
     }
     return $tempRequest;
@@ -154,7 +158,7 @@ function request($target = null)
 
 function API($target)
 {
-    return "/extensionRun/" . $target;
+    return "/engine/" . $target;
 }
 
 function getToken()
@@ -282,7 +286,7 @@ function renderEngineRequest($function,$url,$parameters = [], $server_id = null,
     $parameters["lmntargetFunction"] = $function;
 
     try {
-        $response = $client->request('POST', "https://127.0.0.1:5454/$url", [
+        $response = $client->request('POST', "https://127.0.0.1:2806/$url", [
             "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
@@ -291,7 +295,7 @@ function renderEngineRequest($function,$url,$parameters = [], $server_id = null,
     }
 }
 
-function externalAPI($target, $target_extension_name, $target_server_id,  $params = [])
+function externalAPI($target, $target_extension_name, $target_server_id, $params = [])
 {
     return renderEngineRequest($target,"externalAPI",$params, $target_server_id,$target_extension_name);
 }
@@ -315,14 +319,14 @@ function getLicense() {
 
 function runCommand($command)
 {
-    return renderEngineRequest('','runCommand',[
+    return renderEngineRequest('','command',[
         "command" => $command
     ]);
 }
 
 function runScript($name,$parameters = " ",$sudo = true)
 {
-    return renderEngineRequest('','runScript',[
+    return renderEngineRequest('','script',[
         "local_path" => getPath("scripts/$name"),
         "root" => $sudo ? "yes" : "no",
         "parameters" => trim($parameters) ? $parameters : " "
@@ -339,7 +343,7 @@ function putFile($localPath, $remotePath)
 
 function executeOutsideCommand($connectionType, $username,$password,$remote_host,$remote_port,$command, $disconnect = false)
 {
-    return renderEngineRequest('','runOutsideCommand',[
+    return renderEngineRequest('','outsideCommand',[
         "connection_type" => $connectionType,
         "username" => $username,
         "password" => $password,
@@ -382,13 +386,14 @@ function getFile($localPath, $remotePath)
     ]);
 }
 
-function openTunnel($remote_host, $remote_port, $username, $password)
+function openTunnel($remote_host, $socket_port, $username, $password, $ssh_port = 22)
 {
     return renderEngineRequest('','openTunnel',[
         "remote_host" => $remote_host,
-        "remote_port" => $remote_port,
+        "remote_port" => $socket_port,
         "username" => $username,
-        "password" => $password
+        "password" => $password,
+        "ssh_port" => $ssh_port,
     ]);
 }
 
@@ -416,10 +421,11 @@ function getPath($filename = null)
 function getVariable($key)
 {
     global $limanData;
-    if(array_key_exists("variables",$limanData)){
+
+    if(isset($limanData["variables"]) && isset($limanData["variables"][$key])){
         return $limanData["variables"][$key];
     }else{
-        return null;
+        return "";
     }
 }
 

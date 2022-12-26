@@ -6,17 +6,17 @@
   "type": "project",
   "require": {
     "limanmys/toolkit": "^1.0",
-    "jenssegers/blade": "^1.4",
     "larapack/dd": "^1.1",
-    "phpseclib/phpseclib": "~2.0",
-    "guzzlehttp/guzzle": "^7.4",
+    "phpseclib/phpseclib": "~3.0",
+    "guzzlehttp/guzzle": "^7.5",
     "ext-json": "*",
-    "catfan/medoo": "^1.6",
+    "catfan/medoo": "^2.1.7",
     "ext-openssl": "*",
-    "icewind/smb": "^3.1",
-    "mpdf/mpdf": "^8.0",
+    "mpdf/mpdf": "^8.1",
     "ext-ldap": "*",
     "mervick/aes-everywhere": "^1.1",
-    "laravel/helpers": "^1.4"
+    "laravel/helpers": "^1.5",
+    "beebmx/blade": "^1.5",
+    "spatie/ignition": "^1.4"
   }
 }
