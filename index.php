@@ -17,7 +17,7 @@ function customErrorHandler($exception, $err_str = null, $errfile = null, $errli
             return;
         }
 
-        $message = __($err_str);
+        $message = __($err_str) . " " . $errfile . " " . $errline;
     } else {
         $message = __($exception->getMessage());
     }
@@ -207,7 +207,7 @@ function navigate($name, $params = [])
         }
     }
 
-    return $limanData["navigationRoute"] . '/' . $name . $args;
+    return str_replace("//", "/", (string) $limanData["navigationRoute"] . '/' . $name . $args);
 }
 
 function view($name, $params = [])
