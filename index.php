@@ -17,7 +17,7 @@ function customErrorHandler($exception, $err_str = null, $errfile = null, $errli
             return;
         }
 
-        $message = __($err_str) . " " . $errfile . " " . $errline;
+        $message = __($err_str);
     } else {
         $message = __($exception->getMessage());
     }
