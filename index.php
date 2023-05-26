@@ -64,6 +64,9 @@ function extensionDb($target, $set = null)
     }
 
     if (isset($limanData["settings"][$target])) {
+        if (stringIsJson($limanData["settings"][$target])) {
+            return json_decode($limanData["settings"][$target], true);
+        }
         return $limanData["settings"][$target];
     }
 
@@ -512,6 +515,15 @@ function download($path)
         "path" => $path
     ];
     return "/engine/download/?" . http_build_query($object);
+}
+
+function stringIsJson(string $string)
+{
+    if ($string[0] == "{" || $string[0] == "[") {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+    return false;
 }
 
 if (is_file($limanData["functionsPath"])) {
