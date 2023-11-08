@@ -288,7 +288,7 @@ function dispatchJob($function_name, $parameters = [])
     return renderEngineRequest($function_name, "backgroundJob", $parameters);
 }
 
-function renderEngineRequest($function, $url, $parameters = [], $server_id = null, $extension_id = null)
+function renderEngineRequest($function, $url, $parameters = [], $server_id = null, $extension_id = null, $type = 'POST')
 {
     global $limanData;
     $client = new Client(['verify' => false]);
@@ -298,7 +298,7 @@ function renderEngineRequest($function, $url, $parameters = [], $server_id = nul
     $parameters["lmntargetFunction"] = $function;
 
     try {
-        $response = $client->request('POST', sprintf('https://127.0.0.1:2806/%s', $url), [
+        $response = $client->request($type, sprintf('https://127.0.0.1:2806/%s', $url), [
             "form_params" => $parameters,
         ]);
         return $response->getBody()->getContents();
@@ -352,6 +352,35 @@ function putFile($localPath, $remotePath)
         "local_path" => $localPath,
         "remote_path" => $remotePath,
     ]);
+}
+
+function indexCronjobs()
+{
+    $response = renderEngineRequest('', 'cronjobs', [], null, null, 'GET');
+
+    return (array) json_decode($response);
+}   
+
+function deleteCronjob($id)
+{
+    $response = renderEngineRequest('', sprintf('cronjobs/%s', $id), [], null, null, 'DELETE');
+    
+    return str_replace('"', '', $response);
+}
+
+function createCronjob($payload, $day, $time, $target)
+{
+    $params = [
+        'payload' => $payload,
+        'user_id' => user()->id,
+        'day' => $day,
+        'time' => $time,
+        'target' => $target,
+    ];
+
+    $response = renderEngineRequest($target, 'cronjobs', $params);
+
+    return str_replace('"', '', $response); 
 }
 
 function executeOutsideCommand($connectionType, $username, $password, $remote_host, $remote_port, $command, $disconnect = false)
