@@ -354,35 +354,6 @@ function putFile($localPath, $remotePath)
     ]);
 }
 
-function indexCronjobs()
-{
-    $response = renderEngineRequest('', 'cronjobs', [], null, null, 'GET');
-
-    return (array) json_decode($response);
-}   
-
-function deleteCronjob($id)
-{
-    $response = renderEngineRequest('', sprintf('cronjobs/%s', $id), [], null, null, 'DELETE');
-    
-    return str_replace('"', '', $response);
-}
-
-function createCronjob($payload, $day, $time, $target)
-{
-    $params = [
-        'payload' => $payload,
-        'user_id' => user()->id,
-        'day' => $day,
-        'time' => $time,
-        'target' => $target,
-    ];
-
-    $response = renderEngineRequest($target, 'cronjobs', $params);
-
-    return str_replace('"', '', $response); 
-}
-
 function executeOutsideCommand($connectionType, $username, $password, $remote_host, $remote_port, $command, $disconnect = false)
 {
     return renderEngineRequest('', 'outsideCommand', [
@@ -583,4 +554,80 @@ if (function_exists($limanData["function"])) {
     }
 } else {
     abort("İstediğiniz sayfa bulunamadı", 504);
+}
+
+function indexCronjobs()
+{
+    $response = renderEngineRequest('', 'cronjobs', [], null, null, 'GET');
+
+    return (array) json_decode($response);
+}   
+
+function deleteCronjob($id)
+{
+    $response = renderEngineRequest('', sprintf('cronjobs/%s', $id), [], null, null, 'DELETE');
+    
+    return str_replace('"', '', $response);
+}
+
+function createCronjob($payload, $day, $time, $target)
+{
+    $params = [
+        'payload' => $payload,
+        'user_id' => user()->id,
+        'day' => $day,
+        'time' => $time,
+        'target' => $target,
+    ];
+
+    $response = renderEngineRequest($target, 'cronjobs', $params);
+
+    return str_replace('"', '', $response); 
+}
+
+function indexQueue($queueType)
+{
+    global $limanData;
+    $params = [
+        'user_id' => user()->id,
+        'server_id' => server()->id,
+        'extension_id' => $limanData['extension']['id'],
+        'queue_type' => $queueType,
+    ];
+    $response = renderEngineRequest('', 'queue', $params, null, null, 'GET');
+
+    return (array) json_decode($response);
+}
+
+function deleteQueue($id, $queueType)
+{
+    global $limanData;
+    $params = [
+        'user_id' => user()->id,
+        'server_id' => server()->id,
+        'extension_id' => $limanData['extension']['id'],
+        'queue_type' => $queueType,
+    ];
+    
+    $response = renderEngineRequest('', sprintf('queue/%s', $id), $params, null, null, 'DELETE');
+    
+    return str_replace('"', '', $response);
+}
+
+function createQueue($type, $payload, $target)
+{
+    global $limanData;
+
+    $params = [
+        'type' => $type,
+        'payload' => $payload,
+        'user_id' => user()->id,
+        'server_id' => server()->id,
+        'extension_id' => $limanData['extension']['id'],
+        'target' => $target,
+    ];
+
+    $response = renderEngineRequest($target, 'queue', $params);
+
+    return str_replace('"', '', $response); 
 }
