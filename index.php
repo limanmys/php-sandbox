@@ -462,13 +462,14 @@ function sendNotification($title, $message, $type = "notify")
     ]);
 }
 
-function sendMail($to, $subject, $content, array $attachments = [])
+function sendMail($to, $subject, $content, array $attachments = [], bool $templated = false)
 {
     return limanInternalRequest('sendMail', [
         "to" => $to,
         "subject" => $subject,
         "content" => base64_encode((string) $content),
         "attachments" => json_encode($attachments),
+        "templated" => $templated
     ]);
 }
 
