@@ -5,16 +5,16 @@
   "version": "1.0",
   "type": "project",
   "require": {
-    "limanmys/toolkit": "^1.0",
+    "limanmys/toolkit": "^2.0",
     "larapack/dd": "^1.1",
     "phpseclib/phpseclib": "~3.0",
-    "guzzlehttp/guzzle": "^7.5",
+    "guzzlehttp/guzzle": "^7.9",
     "ext-json": "*",
     "ext-openssl": "*",
     "ext-ldap": "*",
     "mervick/aes-everywhere": "^1.1",
-    "laravel/helpers": "^1.5",
-    "beebmx/blade": "^1.5",
-    "limanmys/php-smb": "^3.5"
+    "icewind/smb": "^3.7",
+    "eftec/bladeone": "^4.18",
+    "laravel/helpers": "^1.7"
   }
 }

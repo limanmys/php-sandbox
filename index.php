@@ -2,7 +2,7 @@
 ob_start();
 require_once(__DIR__ . "/vendor/autoload.php");
 
-use Beebmx\Blade\Blade;
+use eftec\bladeone\BladeOne as Blade;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Collection;
@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use mervick\aesEverywhere\AES256;
 use Liman\Toolkit\RemoteTask\TaskManager;
 
-function customErrorHandler($exception, $err_str = null, $errfile = null, $errline = null)
+function customErrorHandler($exception, $err_str = null, $errfile = null, $errline = null, $errcontext = [])
 {
     if ($err_str) {
         if ($exception == 8) {
@@ -18,8 +18,10 @@ function customErrorHandler($exception, $err_str = null, $errfile = null, $errli
         }
 
         $message = __($err_str);
+        //$message = __($err_str) . " \n Error File: " . $errfile . " \n Error Line: " . $errline . " \n Stacktrace: " . json_encode($errcontext);
     } else {
         $message = __($exception->getMessage());
+        //$message = __($exception->getMessage()). " \n Error File: " . $exception->getFile() . " \n Error Line: " . $exception->getLine(). " \n Stacktrace: " . $exception->getTraceAsString();
     }
 
     abort($message, 201);
@@ -222,7 +224,7 @@ function view($name, $params = [])
     }
 
     $blade = new Blade([dirname((string) $limanData["functionsPath"]), __DIR__ . "/views/"], $path);
-    return $blade->render($name, $params);
+    return $blade->run($name, $params);
 }
 
 function limanInternalRequest($url, $data, $server_id = null, $extension_id = null)
