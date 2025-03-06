@@ -285,6 +285,11 @@ function requestReverseProxy($hostname, $port)
     ]);
 }
 
+function getLimanUsers()
+{
+    return json_encode(limanInternalRequest('getLimanUsers', []));
+}
+
 function dispatchJob($function_name, $parameters = [])
 {
     return renderEngineRequest($function_name, "backgroundJob", $parameters);
