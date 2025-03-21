@@ -13,7 +13,7 @@
             </button>
         </div>
         <div class="modal-body">
-            {{ $slot }}
+            {!! $slot !!}
         </div>
         @isset($footer)
         <div class="modal-footer justify-content-right">
