@@ -13,7 +13,7 @@
                 <form @isset($id)id="{{$id}}_form"@endisset onsubmit="return @isset($url)request('{{$url}}',this,@isset($next){{$next}}@endisset)"@endisset target="#">
             @endif
                 <div class="modal-body">
-                        {{ $slot }}
+                        {!! $slot !!}
                 </div>
                 <div class="modal-footer justify-content-right">
                 </div>
@@ -36,7 +36,7 @@
                 <form @isset($id)id="{{$id}}_form"@endisset onsubmit="return @isset($url)request('{{$url}}',this,@isset($next){{$next}}@endisset)"@endisset target="#">
             @endif
             <div class="modal-body">
-                {{ $slot }}
+                {!! $slot !!}
             </div>
             <div class="modal-footer">
             </div>
