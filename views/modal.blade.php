@@ -75,6 +75,6 @@
                 element.removeAttribute('disabled');
             });
         }
-        cs_{{$id}}('{{explode(':',key($selects))[1] ?? ""}}')
+        cs_{{$id}}('{{explode(':',key($selects) ?? "")[1] ?? ""}}')
     </script>
 @endisset
